@@ -72,7 +72,7 @@ const SingleMatch = ({ match, stage, saveMatch }: SingleMatchProps) => {
             match.homeScore !== null ? styles.disabled : ''
           }`}
           onChange={e => handleScoreChange(e, true)}
-          value={match.homeScore || homeScore}
+          value={match.homeScore === null ? homeScore : match.homeScore}
           disabled={match.homeScore !== null}
         />
         <input
@@ -80,7 +80,7 @@ const SingleMatch = ({ match, stage, saveMatch }: SingleMatchProps) => {
             match.awayScore !== null ? styles.disabled : ''
           }`}
           onChange={e => handleScoreChange(e, false)}
-          value={match.awayScore || awayScore}
+          value={match.awayScore === null ? awayScore : match.awayScore}
           disabled={match.awayScore !== null}
         />
       </div>

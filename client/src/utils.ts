@@ -41,11 +41,13 @@ export const initNextSeasonData = async () => {
 
 export const isStageReadyToDraw = async (
   stage: StageClient,
-  competitionId: number
+  competitionId: number,
+  seasonId: number
 ) => {
-  const season: Season = await seasonService.getCurrentSeason()
+  if (seasonId === 1) {
+    return false
+  }
 
-  const seasonId = season.id
   const prevStage = getPreviousStage(stage)
 
   if (prevStage === null) {

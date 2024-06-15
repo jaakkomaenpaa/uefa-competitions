@@ -32,7 +32,8 @@ export default class Stage {
     const rows = DB.prepare(
       `
       SELECT id, home_id AS homeId, home_score AS homeScore, away_id AS awayId, 
-        away_score AS awayScore, is_overtime AS isOvertime, stage
+        away_score AS awayScore, is_overtime AS isOvertime, stage, 
+        competition_id AS competitionId, season_id AS seasonId
       FROM matches
       WHERE season_id = ?
         AND competition_id = ?
@@ -46,6 +47,8 @@ export default class Stage {
 
     this.matches = rows.map(row => Match.createFromRow(row))
     const phase = convertStageToPhase(this.stage)
+
+    console.log('matches', this.matches)
 
     if (phase === TournamentPhase.Qualifying) {
       finishQualStage(this.matches, this.competitionId, this.stage)
@@ -99,7 +102,10 @@ export default class Stage {
       awayScore: number
     }[]
 
-    if (rows.every(row => row.homeScore !== null && row.awayScore !== null)) {
+    if (
+      rows.length > 0 &&
+      rows.every(row => row.homeScore !== null && row.awayScore !== null)
+    ) {
       return true
     }
     return false
@@ -185,9 +191,7 @@ export default class Stage {
       }
 
       const loserId =
-        winner.getId() === match.getHomeId()
-          ? match.getAwayId()
-          : match.getHomeId()
+        winner.getId() === match.getHomeId() ? match.getAwayId() : match.getHomeId()
 
       const loser = Team.fetchById(loserId)
 

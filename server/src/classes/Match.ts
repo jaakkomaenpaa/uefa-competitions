@@ -77,6 +77,9 @@ export default class Match {
     competitionId: number,
     stage: StageSQL
   ): Match {
+
+    console.log('data 2', homeId, awayId, seasonId, competitionId, stage)
+
     const row = DB.prepare(
       `
       SELECT id, home_id AS homeId, away_id AS awayId, competition_id AS competitionId,
@@ -91,6 +94,9 @@ export default class Match {
         AND stage = ?
     `
     ).get(seasonId, competitionId, homeId, awayId, stage) as Match
+
+    console.log('row', row)
+
     if (!row) {
       throw new Error('Match not found')
     }

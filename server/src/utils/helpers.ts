@@ -6,13 +6,7 @@ import { DB } from './config'
 
 export const convertStageToPhase = (stage: StageSQL): TournamentPhase => {
   const qualifying = [StageSQL.QR1, StageSQL.QR2, StageSQL.QR3, StageSQL.QPO]
-  const knockout = [
-    StageSQL.KPO,
-    StageSQL.R16,
-    StageSQL.QF,
-    StageSQL.SF,
-    StageSQL.F,
-  ]
+  const knockout = [StageSQL.KPO, StageSQL.R16, StageSQL.QF, StageSQL.SF, StageSQL.F]
   if (qualifying.includes(stage)) {
     return TournamentPhase.Qualifying
   } else if (knockout.includes(stage)) {
@@ -78,27 +72,22 @@ export const get2LegMatchWinner = (
   competitionId: number,
   stage: StageSQL
 ): Team | null => {
-  const leg1 = Match.fetchByData(
-    teamId1,
-    teamId2,
-    seasonId,
-    competitionId,
-    stage
-  )
-  const leg2 = Match.fetchByData(
-    teamId2,
-    teamId1,
-    seasonId,
-    competitionId,
-    stage
-  )
+  console.log('data', teamId1, teamId2, seasonId, competitionId, stage)
+
+  const leg1 = Match.fetchByData(teamId1, teamId2, seasonId, competitionId, stage)
+  const leg2 = Match.fetchByData(teamId2, teamId1, seasonId, competitionId, stage)
 
   const leg1HomeScore = leg1.getHomeScore()
   const leg1AwayScore = leg1.getAwayScore()
   const leg2HomeScore = leg2.getHomeScore()
   const leg2AwayScore = leg2.getAwayScore()
 
-  if (!leg1HomeScore || !leg1AwayScore || !leg2HomeScore || !leg2AwayScore) {
+  if (
+    leg1HomeScore === null ||
+    leg1AwayScore === null ||
+    leg2HomeScore === null ||
+    leg2AwayScore === null
+  ) {
     throw new Error('Match scores not yet set')
   }
 
@@ -168,12 +157,8 @@ export const sortUefaTeams = (
         return bIsCupWinner ? 1 : -1
       }
     }
-    const aPos = aDomTeam
-      ? aDomTeam.getLeaguePosition()!
-      : Number.MAX_SAFE_INTEGER
-    const bPos = bDomTeam
-      ? bDomTeam.getLeaguePosition()!
-      : Number.MAX_SAFE_INTEGER
+    const aPos = aDomTeam ? aDomTeam.getLeaguePosition()! : Number.MAX_SAFE_INTEGER
+    const bPos = bDomTeam ? bDomTeam.getLeaguePosition()! : Number.MAX_SAFE_INTEGER
 
     return aPos - bPos
   })
@@ -185,10 +170,7 @@ export const moveTeamsUp = (low: Team, teams: Team[]): void => {
   let counter = teams.length - 1
 
   while (currentLow.getId() !== teams[0].getId()) {
-    currentLow.setUefaStage(
-      currentTop.getStage()!,
-      currentTop.getCompetitionId()!
-    )
+    currentLow.setUefaStage(currentTop.getStage()!, currentTop.getCompetitionId()!)
 
     counter--
     currentLow = currentTop

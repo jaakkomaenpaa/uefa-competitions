@@ -28,19 +28,19 @@ const finishStage = async (
   return response.data
 }
 
-const getDrawForStage = async (competitionId: number, stage: StageSQL) => {
-  const response = await axios.post(
+const getDrawForStage = async (competitionId: number | string, stage: StageSQL) => {
+  const response = await axios.get(
     `${baseUrl}/${competitionId}/get-draw?stage=${stage}`
   )
   return response.data
 }
 
 const getStageStatus = async (
-  competitionId: number,
+  competitionId: number | string,
   stage: StageSQL,
-  seasonId: number
+  seasonId: number | string
 ) => {
-  const response = await axios.post(
+  const response = await axios.get(
     `${baseUrl}/${seasonId}/comp/${competitionId}/stage-status?stage=${stage}`
   )
   return response.data
@@ -51,7 +51,7 @@ const exports = {
   setMatchScore,
   finishStage,
   getDrawForStage,
-  getStageStatus
+  getStageStatus,
 }
 
 export default exports

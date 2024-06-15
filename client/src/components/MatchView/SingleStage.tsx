@@ -15,17 +15,28 @@ const SingleStage = ({ stage, matches }: SingleStageProps) => {
   const { seasonId, compId } = useParams()
   const [matchesToSave, setMatchesToSave] = useState<MatchScore[]>([])
   const [isReadyToDraw, setIsReadyToDraw] = useState<boolean>(false)
+  const [isFinished, setIsFinished] = useState<boolean>(false)
 
   useEffect(() => {
     const getStatus = async () => {
-      if (!compId) {
+      if (!compId || !seasonId) {
         return
       }
-      const status = await isStageReadyToDraw(stage, parseInt(compId))
-      setIsReadyToDraw(status)
+      const drawStatus = await isStageReadyToDraw(
+        stage,
+        parseInt(compId),
+        parseInt(seasonId)
+      )
+      setIsReadyToDraw(drawStatus)
+      const stageStatus = await matchService.getStageStatus(
+        parseInt(compId),
+        convertStageClientToSql(stage),
+        seasonId
+      )
+      setIsFinished(stageStatus.finished)
     }
     getStatus()
-  }, [stage, compId])
+  }, [stage, compId, seasonId])
 
   if (!stage || !seasonId || !compId) {
     return <div>No stage selected</div>
@@ -44,7 +55,7 @@ const SingleStage = ({ stage, matches }: SingleStageProps) => {
     matchesToSave.forEach(async (match: MatchScore) => {
       await matchService.setMatchScore(match)
     })
-    //window.location.reload()
+    window.location.reload()
   }
 
   const makeDraw = async () => {
@@ -66,6 +77,7 @@ const SingleStage = ({ stage, matches }: SingleStageProps) => {
         />
       ))}
       {matches.length > 0 &&
+        !isFinished &&
         matches.every(
           (match: Match) => match.homeScore !== null && match.awayScore !== null
         ) && (
