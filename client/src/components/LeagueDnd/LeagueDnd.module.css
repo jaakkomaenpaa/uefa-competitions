@@ -1,0 +1,68 @@
+.container {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-wrap: nowrap;
+}
+
+.content {
+  display: flex;
+}
+
+.rankColumn {
+  width: 60px;
+  text-align: center;
+}
+
+.rankNumber {
+  padding: 17.5px 0; /* 17.5px is optimal */
+  font-weight: 300;
+}
+
+.listContainer {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  min-width: 200px;
+}
+
+.listItem {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #ccc;
+  margin-bottom: 5px;
+  background-color: #fff;
+}
+
+.itemInfo {
+  display: flex;
+  align-items: center;
+}
+
+.imgContainer {
+  width: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.img {
+  height: 30px;
+  margin-right: 10px;
+}
+
+.clubName {
+  font-weight: 300;
+}
+
+.content.disabled {
+  opacity: 0.5;
+  pointer-events: none; 
+}
+
+.listItem.disabledItem {
+  cursor: not-allowed;
+}

@@ -1,0 +1,83 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-left: 20px;
+  margin-right: 20px;
+  gap: 30px;
+}
+
+.nationList {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 120px;
+  padding: 10px;
+  text-decoration: none;
+  font-weight: 300;
+  color: black;
+  gap: 5px;
+  text-align: center;
+  text-wrap: nowrap;
+  transition: font-weight 0.2s ease;
+}
+
+.link:hover {
+  font-weight: 400;
+}
+
+.imgContainer {
+  width: 70px;
+  height: 70px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid lightgray;
+  transition: border 0.2s ease;
+}
+
+.imgContainer:hover {
+  border: 1px solid blue;
+}
+
+.img {
+  display: inline;
+  height: 100%;
+  width: auto;
+}
+
+.saveButton {
+  background-color: darkblue;
+  border: 0px;
+  color: whitesmoke;
+  font-weight: 500;
+  padding: 12px 50px;
+  border-radius: 30px;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease,
+    transform 0.3s ease;
+  cursor: pointer;
+}
+
+.saveButton:hover {
+  background-color: royalblue;
+  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+  transform: translateY(-3px);
+}
+
+.saveButton.disabled {
+  opacity: 0.5; /* Makes the button look disabled */
+  pointer-events: none; /* Prevents any interaction */
+  cursor: not-allowed; /* Shows a not-allowed cursor */
+}

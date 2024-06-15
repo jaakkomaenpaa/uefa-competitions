@@ -1,0 +1,109 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.selectContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.select {
+  width: 120px;
+  padding: 10px;
+  font-size: 16px;
+  font-weight: 300;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f9f9f9; 
+  color: #333;
+  transition: all 0.3s;
+  margin-right: 20px;
+  margin-left: 5px;
+}
+
+.select:hover {
+  border-color: navy;
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.option {
+  padding: 20px;
+  background-color: #f9f9f9;
+  color: #333; 
+}
+
+.buttonContainer {
+  display: flex;
+  flex-direction: row;
+  gap: 30px;
+  margin-top: 20px;
+}
+
+.pageButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: medium;
+  font-weight: 700;
+  color: navy;
+}
+
+.pageButton.selected {
+  color: cornflowerblue;
+}
+
+.table {
+  border-collapse: collapse;
+  background-color: #f4f4f4;
+  border-radius: 30px;
+}
+
+.th,
+.td {
+  text-align: center;
+  height: 30px;
+  width: 70px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  font-weight: 300;
+}
+
+.th:nth-child(3),
+.td:nth-child(3) {
+  text-align: start;
+  white-space: nowrap;
+  width: auto;
+}
+
+.th:last-child,
+.td:last-child {
+  font-weight: 500;
+}
+
+.tr {
+  border-bottom: 0.5px solid lightgray;
+}
+
+.tr:last-child {
+  border-bottom: 0px;
+}
+
+.logo {
+  height: 30px;
+  vertical-align: middle;
+}
+
+.flag {
+  height: 25px;
+  width: 35px;
+  vertical-align: middle;
+  border-radius: 4px;
+}

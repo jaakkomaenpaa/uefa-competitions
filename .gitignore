@@ -1,0 +1,4 @@
+*.sql
+*.drawio
+/database
+/server-old

@@ -1,0 +1,23 @@
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: darkblue;
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  z-index: 1000;
+}
+
+.navbarTab {
+  text-decoration: none;
+  font-weight: 600;
+  color: whitesmoke;
+  padding: 20px;
+}
+
+.content {
+  margin-top: 60px;
+}
