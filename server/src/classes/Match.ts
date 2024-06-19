@@ -1,5 +1,5 @@
 import { ASSOCIATION_POINTS, TEAM_POINTS } from '../rules/points'
-import { CompetitionCode, StageSQL, TournamentPhase } from '../types'
+import { Aggregate, CompetitionCode, StageSQL, TournamentPhase } from '../types'
 import { DB } from '../utils/config'
 import { convertStageToPhase } from '../utils/helpers'
 import Association from './Association'
@@ -77,9 +77,6 @@ export default class Match {
     competitionId: number,
     stage: StageSQL
   ): Match {
-
-    console.log('data 2', homeId, awayId, seasonId, competitionId, stage)
-
     const row = DB.prepare(
       `
       SELECT id, home_id AS homeId, away_id AS awayId, competition_id AS competitionId,
@@ -94,8 +91,6 @@ export default class Match {
         AND stage = ?
     `
     ).get(seasonId, competitionId, homeId, awayId, stage) as Match
-
-    console.log('row', row)
 
     if (!row) {
       throw new Error('Match not found')
@@ -170,6 +165,67 @@ export default class Match {
     return this.isOvertime
   }
 
+  public setPenalties(): void {
+    if (this.leg !== 2) {
+      throw new Error('Can only set penalties for second leg')
+    }
+
+    const baseHomePens = Math.floor(Math.random() * 6)
+    const baseAwayPens = Math.floor(Math.random() * 6)
+
+    let homePens = baseHomePens
+    let awayPens = baseAwayPens
+
+    if (baseHomePens === baseAwayPens) {
+      const randomNum = Math.random()
+      randomNum < 0.5 ? homePens++ : awayPens++
+    }
+
+    if (Math.abs(baseHomePens - baseAwayPens) > 3) {
+      if (baseHomePens > baseAwayPens) {
+        homePens -= 2
+      }
+      if (baseHomePens < baseAwayPens) {
+        awayPens -= 2
+      }
+    }
+
+    // TODO: add more advanced logic
+    this.pensHome = homePens
+    this.pensAway = awayPens
+  }
+
+  public getAggregate(): Aggregate | null {
+    if (this.leg !== 2) {
+      return null
+    }
+
+    const row = DB.prepare(
+      `
+      SELECT id, home_id AS homeId, away_id AS awayId, competition_id AS competitionId,
+              home_score AS homeScore, away_score AS awayScore, penalties_home AS pensHome,
+              penalties_away AS pensAway, is_overtime AS isOvertime, stage, leg, 
+              season_id AS seasonId  
+      FROM matches
+      WHERE id = ? - 1
+      `
+    ).get(this.id)
+
+    const leg1 = Match.createFromRow(row)
+
+    let homeAggregate = leg1.awayScore!
+    let awayAggregate = leg1.homeScore!
+    const homePens = this.pensHome
+    const awayPens = this.pensAway
+
+    if (this.homeScore !== null && this.awayScore !== null) {
+      homeAggregate += this.homeScore
+      awayAggregate += this.awayScore
+    }
+
+    return { homeAggregate, awayAggregate, homePens, awayPens }
+  }
+
   public getWinnerId(): number | null {
     if (!this.homeScore || !this.awayScore) {
       return null
@@ -187,13 +243,21 @@ export default class Match {
     return null
   }
 
-  public setScore(
-    homeScore: number,
-    awayScore: number,
-    isOvertime: boolean,
-    pensHome: number | null,
-    pensAway: number | null
-  ): void {
+  public setScore(homeScore: number, awayScore: number, isOvertime: boolean): void {
+    let aggregate = null
+
+    if (this.leg === 2) {
+      aggregate = this.getAggregate()
+    }
+
+    if (
+      aggregate !== null &&
+      aggregate.homeAggregate + homeScore === aggregate.awayAggregate + awayScore
+    ) {
+      this.setPenalties()
+      isOvertime = true
+    }
+
     const update = DB.prepare(
       `
       UPDATE matches
@@ -204,10 +268,11 @@ export default class Match {
       homeScore,
       awayScore,
       isOvertime ? 1 : 0,
-      pensHome,
-      pensAway,
+      this.pensHome,
+      this.pensAway,
       this.id
     )
+
     if (update.changes === 0) {
       throw new Error('Setting match score failed')
     }

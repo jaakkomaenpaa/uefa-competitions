@@ -44,6 +44,7 @@ export const isStageReadyToDraw = async (
   competitionId: number,
   seasonId: number
 ) => {
+  
   if (seasonId === 1) {
     return false
   }
@@ -123,6 +124,16 @@ export const getPreviousStage = (stage: StageClient): StageClient | null => {
     return null
   }
   return stages[prevStageIndex]
+}
+
+export const getNextStage = (stage: StageClient): StageClient | null => {
+  const stages = Object.values(StageClient)
+  const nextStageIndex = stages.indexOf(stage) + 1
+
+  if (nextStageIndex >= stages.length) {
+    return null
+  }
+  return stages[nextStageIndex]
 }
 
 export const convertStageClientToSql = (stageClient: StageClient) => {

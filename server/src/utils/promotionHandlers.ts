@@ -325,15 +325,15 @@ export const promoteUclUelReplacements = (
   stage: StageSQL,
   competitionId: CompetitionCode
 ) => {
-  if (competitionId === CompetitionCode.UCL) {
+  if (Number(competitionId) === CompetitionCode.UCL) {
     if (team.isInChampPath()) {
       promoteUclChampPath(stage)
     } else {
       promoteUclLeaguePath(stage)
     }
-  } else if (competitionId === CompetitionCode.UEL) {
+  } else if (Number(competitionId) === CompetitionCode.UEL) {
     promoteUelQual(stage)
-  } else if (competitionId === CompetitionCode.UECL) {
+  } else if (Number(competitionId) === CompetitionCode.UECL) {
     promoteUeclQual(stage)
   }
 }

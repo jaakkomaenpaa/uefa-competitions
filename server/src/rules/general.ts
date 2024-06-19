@@ -111,7 +111,7 @@ export const STAGE_DEMOTIONS: StageDemotions = {
       stage: StageSQL.LP,
     },
     [StageSQL.QR3]: (team: Team) => {
-      const demotionStage = team.isInChampPath() ? StageSQL.QPO : StageSQL.QR3
+      const demotionStage = team.isInChampPath() ? StageSQL.QPO : StageSQL.LP
       return {
         competitionId: CompetitionCode.UEL,
         stage: demotionStage,

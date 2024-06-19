@@ -15,8 +15,8 @@ const LeagueTable = ({ teams }: LeagueTableProps) => {
   teams.sort((a: TeamStats, b: TeamStats) => {
     const aGD = a.goalsFor - a.goalsAgainst
     const bGD = b.goalsFor - b.goalsAgainst
-    if (a.groupPoints !== b.groupPoints) {
-      return b.groupPoints - a.groupPoints
+    if (a.points !== b.points) {
+      return b.points - a.points
     } else if (aGD !== bGD) {
       return bGD - aGD
     } else {
@@ -63,9 +63,9 @@ const LeagueTable = ({ teams }: LeagueTableProps) => {
                 <td className={styles.td}>{team.goalsFor}</td>
                 <td className={styles.td}>{team.goalsAgainst}</td>
                 <td className={styles.td}>
-                  {team.goalsFor - team.goalsAgainst}
+                  {team.goalDifference}
                 </td>
-                <td className={styles.td}>{team.groupPoints}</td>
+                <td className={styles.td}>{team.points}</td>
               </tr>
             )
           })}

@@ -68,12 +68,13 @@ export default class UefaSeason {
   public getLeaguePhase(): TeamWithStats[] {
     const rows = DB.prepare(
       `
-      SELECT t.id AS id, t.name, t.logo, t.code
+      SELECT t.id AS id, t.name, t.logo, t.code, t.confederation_id AS associationId
       FROM matches AS m
       INNER JOIN teams AS t ON t.id = m.home_id
       WHERE season_id = ?
         AND competition_id = ?
         AND stage = 'LP'
+      GROUP BY t.id
     `
     ).all(this.seasonId, this.competitionId) as Team[]
 
@@ -138,6 +139,8 @@ export default class UefaSeason {
 
   public setFirstQualStages(): void {
     const competitions = UefaCompetition.fetchAll()
+
+    Stage.initAll(this.seasonId)
 
     competitions.forEach((comp: UefaCompetition) => {
       const stage = new Stage(StageSQL.QR1, comp.getId())

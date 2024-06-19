@@ -11,9 +11,9 @@ export const getLeagueTeamsByUefaSeason = (req: Request, res: Response) => {
   const competitionId = parseInt(req.params.competitionId)
 
   const season = new UefaSeason(seasonId, competitionId)
-  const teamsWithStats = season.getLeaguePhase()
+  const teams = season.getLeaguePhase()
 
-  teamsWithStats.map((team: TeamWithStats) => {
+  const teamsWithStats = teams.map((team: TeamWithStats) => {
     const stats = {
       played: team.won + team.drawn + team.lost,
       goalDifference: team.goalsFor - team.goalsAgainst,

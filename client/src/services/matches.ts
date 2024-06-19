@@ -1,14 +1,9 @@
 import axios from 'axios'
 import { baseApiUrl } from '../config'
-import { MatchScore, MatchTemplate, StageClient, StageSQL } from '../types'
+import { MatchScore, StageClient, StageSQL } from '../types'
 import { convertStageClientToSql } from '../utils'
 
 const baseUrl = `${baseApiUrl}/matches`
-
-const addMatchTemplate = async (body: MatchTemplate) => {
-  const response = await axios.post(`${baseUrl}/add-templ`, body)
-  return response.data
-}
 
 const setMatchScore = async (body: MatchScore) => {
   const response = await axios.post(`${baseUrl}/set-score/${body.id}`, body)
@@ -35,6 +30,11 @@ const getDrawForStage = async (competitionId: number | string, stage: StageSQL) 
   return response.data
 }
 
+const getAggregate = async (matchId: number) => {
+  const response = await axios.get(`${baseUrl}/${matchId}/aggregate`)  
+  return response.data
+}
+
 const getStageStatus = async (
   competitionId: number | string,
   stage: StageSQL,
@@ -47,10 +47,10 @@ const getStageStatus = async (
 }
 
 const exports = {
-  addMatchTemplate,
   setMatchScore,
   finishStage,
   getDrawForStage,
+  getAggregate,
   getStageStatus,
 }
 

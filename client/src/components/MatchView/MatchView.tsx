@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, ChangeEvent } from 'react'
 import { useParams } from 'react-router-dom'
 
 import SingleStage from './SingleStage'
@@ -12,6 +12,13 @@ const MatchView = () => {
   const [currentStage, setCurrentStage] = useState<StageClient>(StageClient.QR1)
 
   useEffect(() => {
+    const getStage = () => {
+      const stage = window.localStorage.getItem(`stage-comp-${compId}`)
+      if (stage) {
+        setCurrentStage(stage as StageClient)
+      }
+    }
+
     const getMatches = async () => {
       if (seasonId && compId && currentStage) {
         const matchData = await uefaSeasonService.getMatchesByCompStage(
@@ -22,17 +29,24 @@ const MatchView = () => {
         setMatches(matchData)
       }
     }
+    getStage()
     getMatches()
   }, [compId, seasonId, currentStage])
 
   if (!seasonId || !compId) return <div>Loading...</div>
+
+  const handleStageChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    const stage = event.target.value as StageClient
+    setCurrentStage(stage)
+    window.localStorage.setItem(`stage-comp-${compId}`, stage)
+  }
 
   return (
     <div className={styles.container}>
       <select
         className={styles.stageSelect}
         value={currentStage}
-        onChange={e => setCurrentStage(e.target.value as StageClient)}
+        onChange={handleStageChange}
       >
         {Object.values(StageClient).map((stage: StageClient) => (
           <option className={styles.option} key={stage} value={stage}>

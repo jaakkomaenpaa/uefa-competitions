@@ -22,6 +22,30 @@ export default class Stage {
     private matches: Match[] = []
   ) {}
 
+  static initAll(seasonId: number): void {
+    const competitions = Object.values(CompetitionCode).filter(
+      (value): value is CompetitionCode => typeof value === 'number'
+    )
+
+    // Iterate through allocations and place teams according to them
+    competitions.forEach((comp: CompetitionCode) => {
+      const stages = Object.values(StageSQL) as StageSQL[]
+
+      stages.forEach((stage: StageSQL) => {
+        const insert = DB.prepare(
+          `
+            INSERT INTO stages (stage, season_id, competition_id, is_finished)
+            VALUES (?, ?, ?, ?)
+        `
+        ).run(stage, seasonId, comp, 0)
+
+        if (insert.changes === 0) {
+          throw new Error('Inserting stage failed')
+        }
+      })
+    })
+  }
+
   public finish(): void {
     if (!this.competitionId) {
       throw new Error('Competition id missing')
@@ -48,8 +72,6 @@ export default class Stage {
     this.matches = rows.map(row => Match.createFromRow(row))
     const phase = convertStageToPhase(this.stage)
 
-    console.log('matches', this.matches)
-
     if (phase === TournamentPhase.Qualifying) {
       finishQualStage(this.matches, this.competitionId, this.stage)
     } else if (phase === TournamentPhase.League) {
@@ -57,9 +79,23 @@ export default class Stage {
     } else {
       finishKoStage(this.matches, this.competitionId, this.stage)
     }
+
+    const update = DB.prepare(
+      `
+      UPDATE stages
+      SET is_finished = 1
+      WHERE season_id = ?
+        AND stage = ?
+        AND competition_id = ?  
+    `
+    ).run(seasonId, this.stage, this.competitionId)
+
+    if (update.changes === 0) {
+      throw new Error('Finishing stage failed')
+    }
   }
 
-  public makeDraw(): void {
+  public makeDraw(): void {   
     const seasonId = Season.fetchCurrent().getId()
 
     if (!this.competitionId) {
@@ -67,7 +103,7 @@ export default class Stage {
     }
 
     const prevStage = this.getPrevious()
-
+    
     if (prevStage) {
       const prevStageObj = new Stage(prevStage, this.competitionId)
 
@@ -83,32 +119,30 @@ export default class Stage {
     } else if (phase === TournamentPhase.League) {
       initDrawForLeaguePhase(this.competitionId, seasonId)
     } else if (phase === TournamentPhase.Knockout) {
+      console.log('phase ko');
+
       initDrawForKoPhase(this.competitionId, this.stage, seasonId)
     }
   }
 
   public isFinished(seasonId: number): boolean {
-    const rows = DB.prepare(
+    const row = DB.prepare(
       `
-      SELECT id, home_score AS homeScore, away_score AS awayScore
-      FROM matches
+      SELECT is_finished AS isFinished
+      FROM stages
       WHERE season_id = ?
         AND competition_id = ?
         AND stage = ?
       `
-    ).all(seasonId, this.competitionId, this.stage) as {
-      id: number
-      homeScore: number
-      awayScore: number
-    }[]
-
-    if (
-      rows.length > 0 &&
-      rows.every(row => row.homeScore !== null && row.awayScore !== null)
-    ) {
-      return true
+    ).get(seasonId, this.competitionId, this.stage) as {
+      isFinished: boolean
     }
-    return false
+
+    if (!row) {
+      throw new Error('Could not find stage')
+    }
+
+    return row.isFinished
   }
 
   public getTeams(isChampPath: boolean, isLeaguePath: boolean): Team[] {
@@ -195,7 +229,7 @@ export default class Stage {
 
       const loser = Team.fetchById(loserId)
 
-      if (!losers.some((team: Team) => team.getId() === winner.getId())) {
+      if (!losers.some((team: Team) => team.getId() === loser.getId())) {
         losers.push(loser)
       }
     })

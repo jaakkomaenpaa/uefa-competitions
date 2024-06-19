@@ -18,11 +18,12 @@ export const finishQualStage = (
   const stageObj = new Stage(stage, competitionId, matches)
 
   const winners = stageObj.getWinningTeams()
+
   const losers = stageObj.getLosingTeams()
 
   winners.forEach((winner: Team) => {
     winner.moveToNextStage()
-    if (competitionId === CompetitionCode.UCL && stage === StageSQL.QPO) {
+    if (Number(competitionId) === CompetitionCode.UCL && stage === StageSQL.QPO) {
       const points = PARTICIPATION_BONUS[CompetitionCode.UCL][StageSQL.LP]
       winner.increasePoints(points)
       const association = Association.fetchByTeamId(winner.getId())
@@ -30,9 +31,9 @@ export const finishQualStage = (
     }
   })
 
-  if (competitionId === CompetitionCode.UECL) {
+  if (Number(competitionId) === CompetitionCode.UECL) {
     losers.forEach((loser: Team) => {
-      const points = TEAM_POINTS.elimination[competitionId][stage]
+      const points = TEAM_POINTS.elimination[CompetitionCode.UECL][stage]
       loser.increasePoints(points)
     })
   } else {
@@ -64,7 +65,7 @@ export const finishLeagueStage = (
       drawn: bDrawn,
       goalsFor: bGF,
       goalsAgainst: bGA,
-    } = a.getGroupStats(seasonId)
+    } = b.getGroupStats(seasonId)
 
     const aGD = aGF - aGA
     const aPoints = aWon * 3 + aDrawn
@@ -102,7 +103,7 @@ export const finishLeagueStage = (
 
   // Set teams for stages
   const r16Teams = sortedTeams.slice(0, SEEDED_R16_TEAMS)
-  const koPlayOffTeams = sortedTeams.slice(SEEDED_R16_TEAMS)
+  const koPlayOffTeams = sortedTeams.slice(SEEDED_R16_TEAMS, 24)
 
   r16Teams.forEach((team: Team) => {
     const bonus = PARTICIPATION_BONUS[competitionId][StageSQL.R16]

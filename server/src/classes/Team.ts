@@ -156,19 +156,20 @@ export default class Team {
   public getGroupStats(seasonId: number): TeamGroupStats {
     interface TeamMatch {
       teamId: number
+      oppId: number
       teamScore: number
       oppScore: number
     }
 
     const rows = DB.prepare(
       `
-      SELECT home_id AS teamId, home_score AS teamScore, away_score AS oppScore
+      SELECT home_id AS teamId, home_score AS teamScore, away_score AS oppScore, away_id AS oppId
       FROM matches
       WHERE home_id = ? 
         AND season_id = ?
         AND stage = 'LP'
       UNION 
-      SELECT away_id AS teamId, away_score AS teamScore, home_score AS oppScore
+      SELECT away_id AS teamId, away_score AS teamScore, home_score AS oppScore, home_id AS oppId
       FROM matches
       WHERE away_id = ? 
         AND season_id = ? 
@@ -187,9 +188,13 @@ export default class Team {
       this.goalsAgainst! += match.oppScore
       if (match.teamScore > match.oppScore) {
         this.won! += 1
-      } else if (match.teamScore === match.oppScore) {
+      } else if (
+        match.teamScore !== null &&
+        match.oppScore !== null &&
+        match.teamScore === match.oppScore
+      ) {
         this.drawn! += 1
-      } else {
+      } else if (match.oppScore > match.teamScore){
         this.lost! += 1
       }
     })
@@ -270,8 +275,7 @@ export default class Team {
   public dropToLowerComp(): void {
     this.setCurrentStage()
 
-    const demotionConfig =
-      STAGE_DEMOTIONS[this.competitionId!]?.[this.currentStage!]
+    const demotionConfig = STAGE_DEMOTIONS[this.competitionId!]?.[this.currentStage!]
 
     if (!demotionConfig) {
       throw new Error(
@@ -309,6 +313,10 @@ export default class Team {
 
     if (!row) {
       throw new Error('League position not found')
+    }
+
+    if (this.associationId === 1) {
+      return false
     }
 
     return row.leaguePosition === 1
@@ -357,8 +365,6 @@ export default class Team {
 
   public hasQualifiedForLP(competitionId: CompetitionCode): boolean {
     this.setCurrentStage()
-    return (
-      this.competitionId === competitionId && this.currentStage === StageSQL.LP
-    )
+    return this.competitionId === competitionId && this.currentStage === StageSQL.LP
   }
 }

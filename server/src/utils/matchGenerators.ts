@@ -26,9 +26,7 @@ export const drawMatchupsForQualStage = (
   teams = sortTeamsByRanking(teams, ranking)
 
   const middleIndex = Math.ceil(teams.length / 2)
-  const seeded = shuffleTeams(teams.slice(0, middleIndex))
-  const unSeeded = shuffleTeams(teams.slice(middleIndex))
-
+  
   let matchUps: MatchUp[] = []
 
   // TODO: Optimize this
@@ -37,6 +35,9 @@ export const drawMatchupsForQualStage = (
     matchUps.some((match: MatchUp) => match.homeNationId === match.awayNationId)
   ) {
     matchUps.length = 0
+    const seeded = shuffleTeams(teams.slice(0, middleIndex))
+    const unSeeded = shuffleTeams(teams.slice(middleIndex))
+
     seeded.forEach((seed: Team, index: number) => {
       const unSeed = unSeeded[index]
 
@@ -96,6 +97,8 @@ export const drawMatchupsForGroupStage = (
   const pot4 = shuffleTeams(teams.slice(quarterSize * 3))
 
   const matchUps: MatchUp[] = []
+
+  // TODO: set matchdays and further randomise matchups
 
   pot1.forEach((team: Team, index: number) => {
     if (index >= pot1.length - 1) index = -1
@@ -195,6 +198,8 @@ export const drawMatchupsForKpoOrR16 = (
   stage: StageSQL,
   competitionId: number
 ) => {
+  console.log('drawing matches');
+  
   if (teams.length % 2 !== 0) {
     throw new Error('Not an even number of teams')
   }
@@ -211,13 +216,12 @@ export const drawMatchupsForKpoOrR16 = (
     if (aPosition === null) return 1
     if (bPosition === null) return -1
 
-    return bPosition - aPosition
+    return aPosition - bPosition
   })
 
   const middleIndex = Math.ceil(sortedTeams.length / 2)
-  const seeded = shuffleTeams(sortedTeams.slice(0, middleIndex))
-  const unSeeded = shuffleTeams(sortedTeams.slice(middleIndex))
-
+ 
+  
   let matchUps: MatchUp[] = []
 
   // TODO: Optimize this
@@ -225,6 +229,9 @@ export const drawMatchupsForKpoOrR16 = (
     matchUps.length === 0 ||
     matchUps.some((match: MatchUp) => match.homeNationId === match.awayNationId)
   ) {
+    const seeded = shuffleTeams(sortedTeams.slice(0, middleIndex))
+    const unSeeded = shuffleTeams(sortedTeams.slice(middleIndex))
+
     matchUps.length = 0
     seeded.forEach((seed: Team, index: number) => {
       const unSeed = unSeeded[index]

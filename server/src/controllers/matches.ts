@@ -14,15 +14,11 @@ export const getMatchById = (req: Request, res: Response) => {
   res.json(match)
 }
 
-// NOT USED
-export const addMatchTemplateFromClient = (req: Request, res: Response) => {
-  const { homeId, awayId, competitionId, stage, leg, seasonId } = req.body
-  try {
-    Match.addTemplate(homeId, awayId, competitionId, stage, leg, seasonId)
-    res.status(201).json({ message: 'Success' })
-  } catch (error) {
-    res.status(500).json({ message: 'An error occurred' })
-  }
+export const getMatchAggregate = (req: Request, res: Response) => {
+  const matchId = parseInt(req.params.matchId)
+  const match = Match.fetchById(matchId)
+  const aggregate = match.getAggregate()
+  res.json(aggregate)
 }
 
 export const setMatchScore = (req: Request, res: Response) => {
@@ -31,7 +27,7 @@ export const setMatchScore = (req: Request, res: Response) => {
 
   const match = Match.fetchById(matchId)
   try {
-    match.setScore(homeScore, awayScore, isOvertime, pensHome, pensAway)
+    match.setScore(homeScore, awayScore, isOvertime)
     match.setCoeffPoints()
     res.status(201).json({ message: 'Success' })
   } catch (error) {
@@ -43,6 +39,7 @@ export const setMatchScore = (req: Request, res: Response) => {
 export const finishStage = (req: Request, res: Response) => {
   const { stage, competitionId } = req.body
 
+  console.log('stage', stage, competitionId)
   const stageObj = new Stage(stage, competitionId)
   try {
     stageObj.finish()

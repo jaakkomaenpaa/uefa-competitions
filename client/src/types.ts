@@ -11,7 +11,7 @@ export interface Team {
   code: string
   competition?: CompetitionCode
   coeffPoints?: number
-  groupPoints?: number
+  points?: number
   confederationId?: number
   confederation?: string
   confederationFlag?: string
@@ -21,6 +21,7 @@ export interface Team {
   lost?: number,
   goalsFor?: number,
   goalsAgainst?: number
+  goalDifference?: number
   leaguePosition?: number
   isCupWinner?: boolean
 }
@@ -36,7 +37,8 @@ export interface TeamStats {
   lost: number,
   goalsFor: number,
   goalsAgainst: number
-  groupPoints: number
+  goalDifference: number
+  points: number
 }
 
 export interface Association {

@@ -4,7 +4,7 @@ import { Match, MatchScore, StageClient } from '../../types'
 import styles from './MatchView.module.css'
 import matchService from '../../services/matches'
 import SingleMatch from './SingleMatch'
-import { convertStageClientToSql, isStageReadyToDraw } from '../../utils'
+import { convertStageClientToSql, getNextStage, isStageReadyToDraw, sleep } from '../../utils'
 
 interface SingleStageProps {
   stage: StageClient
@@ -43,11 +43,18 @@ const SingleStage = ({ stage, matches }: SingleStageProps) => {
   }
 
   const saveMatch = (match: MatchScore) => {
+    console.log('match', match);
     setMatchesToSave([...matchesToSave, match])
+    console.log('matches to save', matchesToSave)
   }
 
   const finishStage = async () => {
     await matchService.finishStage(seasonId, stage, compId)
+    const nextStage = getNextStage(stage)
+    if (nextStage !== null) {
+      window.localStorage.setItem(`stage-comp-${compId}`, nextStage)
+    }
+    await sleep(0.5)
     window.location.reload()
   }
 
@@ -55,10 +62,11 @@ const SingleStage = ({ stage, matches }: SingleStageProps) => {
     matchesToSave.forEach(async (match: MatchScore) => {
       await matchService.setMatchScore(match)
     })
+    await sleep(0.5)
     window.location.reload()
   }
 
-  const makeDraw = async () => {
+  const makeDraw = async () => {    
     await matchService.getDrawForStage(
       parseInt(compId),
       convertStageClientToSql(stage)
@@ -86,13 +94,13 @@ const SingleStage = ({ stage, matches }: SingleStageProps) => {
           </button>
         )}
       {matches.length === 0 && !isReadyToDraw && (
-        <div>No matches for this stage yet</div>
+        <div>This stage cannot be drawn yet</div>
       )}
-      {matches.length === 0 && isReadyToDraw && (
+      {matches.length === 0 && isReadyToDraw ? (
         <button className={styles.saveButton} onClick={makeDraw}>
           Make draw
         </button>
-      )}
+      ) : null}
       {matchesToSave.length > 0 && (
         <button className={styles.saveButton} onClick={setScores}>
           Save scores

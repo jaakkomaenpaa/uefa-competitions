@@ -45,3 +45,10 @@ export interface BaseRankNation {
   id: number
   coeffPoints?: number
 }
+
+export interface Aggregate {
+  homeAggregate: number
+  awayAggregate: number
+  homePens: number | null
+  awayPens: number | null
+}

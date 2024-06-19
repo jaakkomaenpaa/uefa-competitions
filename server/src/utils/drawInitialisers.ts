@@ -1,16 +1,26 @@
-import Stage from "../classes/Stage"
-import Team from "../classes/Team"
-import { HAS_STAGE_TWO_PATHS } from "../rules/general"
-import { CompetitionCode, StageSQL } from "../types"
-import { shuffleTeams } from "./helpers"
-import { drawMatchupsForGroupStage, drawMatchupsForKpoOrR16, drawMatchupsForQfOrSf, drawMatchupsForQualStage, setFinal } from "./matchGenerators"
+import Stage from '../classes/Stage'
+import Team from '../classes/Team'
+import { HAS_STAGE_TWO_PATHS } from '../rules/general'
+import { CompetitionCode, StageSQL } from '../types'
+import { shuffleTeams } from './helpers'
+import {
+  drawMatchupsForGroupStage,
+  drawMatchupsForKpoOrR16,
+  drawMatchupsForQfOrSf,
+  drawMatchupsForQualStage,
+  setFinal,
+} from './matchGenerators'
 
-export const initDrawForQualStage = (competitionId: CompetitionCode, stage: StageSQL, seasonId: number) =>{
+export const initDrawForQualStage = (
+  competitionId: CompetitionCode,
+  stage: StageSQL,
+  seasonId: number
+) => {
   const stageObj = new Stage(stage, competitionId)
-
   const stageHasTwoPaths = HAS_STAGE_TWO_PATHS[competitionId][stage]
 
-  if (stage === StageSQL.QR2 && competitionId === CompetitionCode.UECL) {
+  if (stage === StageSQL.QR2 && Number(competitionId) === CompetitionCode.UECL) {
+
     const chPathTeams = stageObj.getTeams(true, false)
     const lgPathTeams = stageObj.getTeams(false, true)
 
@@ -28,7 +38,6 @@ export const initDrawForQualStage = (competitionId: CompetitionCode, stage: Stag
 
     drawMatchupsForQualStage(r2Teams, seasonId, StageSQL.QR2, competitionId)
     drawMatchupsForQualStage(lgPathTeams, seasonId, StageSQL.QR2, competitionId)
-
   } else if (stageHasTwoPaths) {
     const chPathTeams = stageObj.getTeams(true, false)
     const lgPathTeams = stageObj.getTeams(false, true)
@@ -41,7 +50,10 @@ export const initDrawForQualStage = (competitionId: CompetitionCode, stage: Stag
   }
 }
 
-export const initDrawForLeaguePhase = (competitionId: CompetitionCode, seasonId: number) => {
+export const initDrawForLeaguePhase = (
+  competitionId: CompetitionCode,
+  seasonId: number
+) => {
   const stageObj = new Stage(StageSQL.LP, competitionId)
 
   const teams = stageObj.getTeams(false, false)
@@ -49,9 +61,13 @@ export const initDrawForLeaguePhase = (competitionId: CompetitionCode, seasonId:
   drawMatchupsForGroupStage(teams, seasonId, competitionId)
 }
 
-export const initDrawForKoPhase = (competitionId: CompetitionCode, stage: StageSQL, seasonId: number) => {
-  const stageObj = new Stage(stage, competitionId)
+export const initDrawForKoPhase = (
+  competitionId: CompetitionCode,
+  stage: StageSQL,
+  seasonId: number
+) => {
   
+  const stageObj = new Stage(stage, competitionId)
   const teams = stageObj.getTeams(false, false)
 
   if (stage === StageSQL.KPO || stage === StageSQL.R16) {

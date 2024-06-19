@@ -72,7 +72,6 @@ export const get2LegMatchWinner = (
   competitionId: number,
   stage: StageSQL
 ): Team | null => {
-  console.log('data', teamId1, teamId2, seasonId, competitionId, stage)
 
   const leg1 = Match.fetchByData(teamId1, teamId2, seasonId, competitionId, stage)
   const leg2 = Match.fetchByData(teamId2, teamId1, seasonId, competitionId, stage)
@@ -101,13 +100,15 @@ export const get2LegMatchWinner = (
   }
 
   // If draw
-  const pensHome = leg2.getPensHome()
-  const pensAway = leg2.getPensAway()
+  const team1Pens =
+    leg1.getPensHome() !== null ? leg1.getPensHome() : leg2.getPensAway()
+  const team2Pens =
+    leg1.getPensAway() !== null ? leg1.getPensAway() : leg2.getPensHome()
 
-  if (!pensHome || !pensAway) {
+  if (team1Pens === null || team2Pens === null) {
     return null
   }
-  if (pensHome > pensAway) {
+  if (team2Pens > team1Pens) {
     return Team.fetchById(teamId2)
   } else {
     return Team.fetchById(teamId1)

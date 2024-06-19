@@ -35,6 +35,10 @@
   font-weight: 400;
 }
 
+.link:hover .imgContainer {
+  border: 1px solid blue;
+}
+
 .imgContainer {
   width: 70px;
   height: 70px;
@@ -46,10 +50,6 @@
   justify-content: center;
   border: 1px solid lightgray;
   transition: border 0.2s ease;
-}
-
-.imgContainer:hover {
-  border: 1px solid blue;
 }
 
 .img {

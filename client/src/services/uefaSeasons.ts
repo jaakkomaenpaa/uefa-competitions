@@ -5,17 +5,6 @@ import { convertStageClientToSql } from '../utils'
 
 const baseUrl = `${baseApiUrl}/seasons/uefa`
 
-// NOT IN USE
-const getTeamsBySeasonAndComp = async (
-  seasonId: number | string,
-  compId: number | string
-) => {
-  const response = await axios.get(
-    `${baseUrl}/${seasonId}/teams/comp/${compId}`
-  )
-  return response.data
-}
-
 const getLeagueTeamsByUefaSeason = async (
   seasonId: string | number,
   compId: string | number
@@ -32,17 +21,6 @@ const getMatchesByCompStage = async (
   const stageSql = convertStageClientToSql(stage)
   const response = await axios.get(
     `${baseUrl}/${seasonId}/matches/comp/${compId}?stage=${stageSql}`
-  )
-  return response.data
-}
-
-// NOT IN USE
-const getTeamGroupMatchesBySeason = async (
-  seasonId: string,
-  teamId: number
-) => {
-  const response = await axios.get(
-    `${baseUrl}/${seasonId}/group-matches/team/${teamId}`
   )
   return response.data
 }
