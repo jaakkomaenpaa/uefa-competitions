@@ -1,6 +1,7 @@
 import Match from '../classes/Match'
 import Team from '../classes/Team'
-import { STAGE_VALUES } from '../rules/general'
+import { CLUB_RANKING_DELAY, STAGE_VALUES } from '../rules/general'
+import { COEFFICIENT_FACTOR } from '../rules/points'
 import { StageSQL, TournamentPhase } from '../types'
 import { DB } from './config'
 
@@ -49,6 +50,25 @@ export const shuffleTeams = (teams: Team[]): Team[] => {
   return shuffledArray
 }
 
+export const sortTeamsByCoeff = (teams: Team[], seasonId: number) => {
+  return teams.sort((a: Team, b: Team) => {
+    const aClubPoints = a.fetchCoeffPoints(seasonId - CLUB_RANKING_DELAY, 5)
+    const aNationPoints =
+      a.getAssociation().getCoeffPoints(seasonId - CLUB_RANKING_DELAY, 5) *
+      COEFFICIENT_FACTOR
+
+    const bClubPoints = b.fetchCoeffPoints(seasonId - CLUB_RANKING_DELAY, 5)
+    const bNationPoints =
+      b.getAssociation().getCoeffPoints(seasonId - CLUB_RANKING_DELAY, 5) *
+      COEFFICIENT_FACTOR
+
+    const aPoints = Math.max(aClubPoints, aNationPoints)
+    const bPoints = Math.max(bClubPoints, bNationPoints)
+
+    return bPoints - aPoints
+  })
+}
+
 export const sortTeamsByRanking = (teams: Team[], ranking: Team[]) => {
   return teams.sort((a: Team, b: Team) => {
     const indexA = ranking.findIndex(r => r.getId() === a.getId())
@@ -68,7 +88,6 @@ export const get2LegMatchWinner = (
   competitionId: number,
   stage: StageSQL
 ): Team | null => {
-
   const leg1 = Match.fetchByData(teamId1, teamId2, seasonId, competitionId, stage)
   const leg2 = Match.fetchByData(teamId2, teamId1, seasonId, competitionId, stage)
 

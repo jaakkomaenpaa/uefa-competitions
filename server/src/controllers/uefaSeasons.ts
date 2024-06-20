@@ -5,6 +5,7 @@ import UefaSeason from '../classes/UefaSeason'
 import Ranking from '../classes/Ranking'
 import Team from '../classes/Team'
 import { ASSOCIATION_RANKING_DELAY } from '../rules/general'
+import Association from '../classes/Association'
 
 export const getLeagueTeamsByUefaSeason = (req: Request, res: Response) => {
   const seasonId = parseInt(req.params.seasonId)
@@ -94,7 +95,8 @@ export const initUefaSpots = (req: Request, res: Response) => {
   const associationRanking = Ranking.fetchAssociationRanking(
     seasonId - ASSOCIATION_RANKING_DELAY,
     5
-  )
+  ).filter((nation: Association) => nation.getId() !== 1 && nation.getId() !== 235)
+
   const season = new UefaSeason(seasonId)
 
   try {

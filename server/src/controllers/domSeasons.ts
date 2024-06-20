@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import DomSeason from '../classes/DomSeason'
+import Team from '../classes/Team'
 
 export const getTeamsByDomSeason = (req: Request, res: Response) => {
   const seasonId = parseInt(req.params.seasonId)
@@ -34,13 +35,17 @@ export const initAllDomSeasons = (req: Request, res: Response) => {
 export const postDomSeasonResults = (req: Request, res: Response) => {
   const seasonId = parseInt(req.params.seasonId)
   const associationId = parseInt(req.params.associationId)
-  const { league, cupWinner } = req.body
+  let { league, cupWinner } = req.body
+
+  league = league.map((team: { id: number }) => Team.fetchById(team.id))
+  cupWinner = Team.fetchById(cupWinner.id)
 
   const season = new DomSeason(seasonId, associationId)
   try {
     season.postResults(league, cupWinner)
     res.status(201).json({ message: 'Success' })
   } catch (error) {
+    console.log(error)
     res.status(500).json({ message: 'An error occurred' })
   }
 }

@@ -1,10 +1,8 @@
 import Association from '../classes/Association'
 import Match from '../classes/Match'
-import Ranking from '../classes/Ranking'
 import Team from '../classes/Team'
-import { CLUB_RANKING_DELAY } from '../rules/general'
 import { CompetitionCode, StageSQL } from '../types'
-import { shuffleTeams, sortTeamsByRanking } from './helpers'
+import { shuffleTeams, sortTeamsByCoeff } from './helpers'
 
 interface MatchUp {
   homeId: number
@@ -23,8 +21,7 @@ export const drawMatchupsForQualStage = (
     throw new Error('Not an even number of teams')
   }
 
-  const ranking = Ranking.fetchClubRanking(seasonId - CLUB_RANKING_DELAY, 5)
-  teams = sortTeamsByRanking(teams, ranking)
+  teams = sortTeamsByCoeff(teams, seasonId)
 
   const middleIndex = Math.ceil(teams.length / 2)
 
@@ -74,8 +71,7 @@ export const drawMatchupsForGroupStage = (
   if (teams.length % 2 !== 0) {
     throw new Error('Not an even number of teams')
   }
-  const ranking = Ranking.fetchClubRanking(seasonId - CLUB_RANKING_DELAY, 5)
-  teams = sortTeamsByRanking(teams, ranking)
+  teams = sortTeamsByCoeff(teams, seasonId)
 
   const quarterSize = Math.ceil(teams.length / 4)
   const pot1 = shuffleTeams(teams.slice(0, quarterSize))

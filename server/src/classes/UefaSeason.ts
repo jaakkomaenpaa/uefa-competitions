@@ -3,9 +3,10 @@ import {
   CLUB_RANKING_DELAY,
   EPS_SPOT_RANKING_DELAY,
 } from '../rules/general'
+import { COEFFICIENT_FACTOR } from '../rules/points'
 import { CompetitionCode, StageSQL, TeamWithStats } from '../types'
 import { DB } from '../utils/config'
-import { moveTeamsUp, sortUefaTeams } from '../utils/helpers'
+import { moveTeamsUp, sortTeamsByCoeff, sortUefaTeams } from '../utils/helpers'
 import {
   handleUeclVacation,
   promoteUclChampPath,
@@ -317,13 +318,7 @@ export default class UefaSeason {
     }
 
     let qualTeams = rows.map(row => Team.createFromRow(row))
-    const ranking = Ranking.fetchClubRanking(this.seasonId - CLUB_RANKING_DELAY, 5)
-
-    qualTeams = qualTeams.sort((a: Team, b: Team) => {
-      const indexA = ranking.findIndex(r => r.getId() === a.getId())
-      const indexB = ranking.findIndex(r => r.getId() === b.getId())
-      return indexA - indexB
-    })
+    qualTeams = sortTeamsByCoeff(qualTeams, this.seasonId)
 
     if (isChampPath) {
       qualTeams = qualTeams.filter((team: Team) => team.isInChampPath())
@@ -361,13 +356,7 @@ export default class UefaSeason {
     }
 
     let qualTeams = rows.map(row => Team.createFromRow(row))
-    const ranking = Ranking.fetchClubRanking(this.seasonId - CLUB_RANKING_DELAY, 5)
-
-    qualTeams = qualTeams.sort((a: Team, b: Team) => {
-      const indexA = ranking.findIndex(r => r.getId() === a.getId())
-      const indexB = ranking.findIndex(r => r.getId() === b.getId())
-      return indexA - indexB
-    })
+    qualTeams = sortTeamsByCoeff(qualTeams, this.seasonId)
 
     if (isChampPath) {
       qualTeams = qualTeams.filter((team: Team) => team.isInChampPath())

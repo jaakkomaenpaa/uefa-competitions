@@ -1,3 +1,4 @@
+import { COEFFICIENT_FACTOR } from '../rules/points'
 import { DB } from '../utils/config'
 import Association from './Association'
 import Team from './Team'
@@ -53,11 +54,11 @@ export default class Ranking {
 
     let teams = rows.map(row => Team.createFromRow(row))
 
-    teams = teams.filter((team: Team) => team.getCoeffPoints() > 0)
-
     teams = teams.map((team: Team) => {
       const association = team.getAssociation()
-      const associationPoints = association.getCoeffPoints(seasonId)
+      const associationPoints =
+        association.getCoeffPoints(seasonId, seasons) * COEFFICIENT_FACTOR
+
       if (associationPoints > team.getCoeffPoints()) {
         team.setCoeffPoints(associationPoints)
       }

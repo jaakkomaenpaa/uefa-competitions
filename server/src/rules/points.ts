@@ -264,3 +264,5 @@ export const ASSOCIATION_POINTS = {
   participation: PARTICIPATION_BONUS,
   bonus: LEAGUE_RANK_BONUS,
 }
+
+export const COEFFICIENT_FACTOR = 0.2

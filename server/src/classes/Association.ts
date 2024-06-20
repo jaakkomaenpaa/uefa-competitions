@@ -106,15 +106,15 @@ export default class Association {
     return this.leagueName
   }
 
-  public getCoeffPoints(seasonId: number): number {
-    let firstSeasonId = seasonId - 5 + 1
+  public getCoeffPoints(seasonId: number, seasons: number): number {
+    let firstSeasonId = seasonId - seasons + 1
     if (firstSeasonId < 1) {
       firstSeasonId = 1
     }
 
     const row = DB.prepare(
       `
-      SELECT coeff_points AS coeffPoints
+      SELECT SUM(coeff_points) AS coeffPoints
       FROM confederation_seasons
       WHERE confederation_id = ?
         AND season_id >= ? 

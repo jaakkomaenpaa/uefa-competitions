@@ -145,6 +145,29 @@ export default class Team {
     this.coeffPoints = points
   }
 
+  public fetchCoeffPoints(seasonId: number, seasons: number): number {
+    let firstSeasonId = seasonId - seasons + 1
+    if (firstSeasonId < 1) {
+      firstSeasonId = 1
+    }
+
+    const row = DB.prepare(
+      `
+        SELECT SUM(coeff_points) AS coeffPoints
+        FROM team_seasons_uefa
+        WHERE team_id = ?
+          AND season_id >= ? 
+          AND season_id <= ?
+      `
+    ).get(this.id, firstSeasonId, seasonId) as { coeffPoints: number }
+
+    if (!row) {
+      return 0
+    }
+
+    return row.coeffPoints
+  }
+
   public getSeasonCoeffPoints(seasonId: number): number {
     const row = DB.prepare(
       `
