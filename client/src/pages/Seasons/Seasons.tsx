@@ -11,7 +11,7 @@ const Seasons = () => {
   useEffect(() => {
     const getSeasons = async () => {
       const seasonData = await seasonService.getAllSeasons()
-      setSeasons(seasonData)
+      setSeasons(seasonData.filter((season: Season) => season.id >= 6))
     }
     getSeasons()
   }, [])

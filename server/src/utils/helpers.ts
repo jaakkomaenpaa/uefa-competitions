@@ -51,16 +51,12 @@ export const shuffleTeams = (teams: Team[]): Team[] => {
 
 export const sortTeamsByRanking = (teams: Team[], ranking: Team[]) => {
   return teams.sort((a: Team, b: Team) => {
-    // TODO: change to actual
-    /*
     const indexA = ranking.findIndex(r => r.getId() === a.getId())
     const indexB = ranking.findIndex(r => r.getId() === b.getId())
 
     const validIndexA = indexA === -1 ? Infinity : indexA
     const validIndexB = indexB === -1 ? Infinity : indexB
-    */
-    const validIndexA = a.getAssociation().getId()
-    const validIndexB = b.getAssociation().getId()
+
     return validIndexA - validIndexB
   })
 }

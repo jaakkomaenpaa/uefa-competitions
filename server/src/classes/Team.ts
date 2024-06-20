@@ -137,19 +137,28 @@ export default class Team {
     return this.leaguePosition
   }
 
-  public getCoeffPoints(seasonId: number): number {
+  public getCoeffPoints(): number {
+    return this.coeffPoints
+  }
+
+  public setCoeffPoints(points: number): void {
+    this.coeffPoints = points
+  }
+
+  public getSeasonCoeffPoints(seasonId: number): number {
     const row = DB.prepare(
       `
       SELECT coeff_points AS coeffPoints
-      FROM team_seasons_uefa
-      WHERE team_id = ?
-        AND season_id = ?  
+      FROM confederation_seasons
+      WHERE confederation_id = ?
+        AND season_id = ? 
     `
     ).get(this.id, seasonId) as { coeffPoints: number }
 
     if (!row) {
-      throw new Error('Team not found in uefa season')
+      return 0
     }
+
     return row.coeffPoints
   }
 
@@ -194,7 +203,7 @@ export default class Team {
         match.teamScore === match.oppScore
       ) {
         this.drawn! += 1
-      } else if (match.oppScore > match.teamScore){
+      } else if (match.oppScore > match.teamScore) {
         this.lost! += 1
       }
     })

@@ -2,6 +2,7 @@ import Association from '../classes/Association'
 import Match from '../classes/Match'
 import Ranking from '../classes/Ranking'
 import Team from '../classes/Team'
+import { CLUB_RANKING_DELAY } from '../rules/general'
 import { CompetitionCode, StageSQL } from '../types'
 import { shuffleTeams, sortTeamsByRanking } from './helpers'
 
@@ -22,11 +23,11 @@ export const drawMatchupsForQualStage = (
     throw new Error('Not an even number of teams')
   }
 
-  const ranking = Ranking.fetchClubRanking(seasonId, 5)
+  const ranking = Ranking.fetchClubRanking(seasonId - CLUB_RANKING_DELAY, 5)
   teams = sortTeamsByRanking(teams, ranking)
 
   const middleIndex = Math.ceil(teams.length / 2)
-  
+
   let matchUps: MatchUp[] = []
 
   // TODO: Optimize this
@@ -60,22 +61,8 @@ export const drawMatchupsForQualStage = (
   }
 
   matchUps.forEach((match: MatchUp) => {
-    Match.addTemplate(
-      match.homeId,
-      match.awayId,
-      competitionId,
-      stage,
-      1,
-      seasonId
-    )
-    Match.addTemplate(
-      match.awayId,
-      match.homeId,
-      competitionId,
-      stage,
-      2,
-      seasonId
-    )
+    Match.addTemplate(match.homeId, match.awayId, competitionId, stage, 1, seasonId)
+    Match.addTemplate(match.awayId, match.homeId, competitionId, stage, 2, seasonId)
   })
 }
 
@@ -87,7 +74,7 @@ export const drawMatchupsForGroupStage = (
   if (teams.length % 2 !== 0) {
     throw new Error('Not an even number of teams')
   }
-  const ranking = Ranking.fetchClubRanking(seasonId, 5)
+  const ranking = Ranking.fetchClubRanking(seasonId - CLUB_RANKING_DELAY, 5)
   teams = sortTeamsByRanking(teams, ranking)
 
   const quarterSize = Math.ceil(teams.length / 4)
@@ -198,8 +185,8 @@ export const drawMatchupsForKpoOrR16 = (
   stage: StageSQL,
   competitionId: number
 ) => {
-  console.log('drawing matches');
-  
+  console.log('drawing matches')
+
   if (teams.length % 2 !== 0) {
     throw new Error('Not an even number of teams')
   }
@@ -208,7 +195,6 @@ export const drawMatchupsForKpoOrR16 = (
     throw new Error('Group positions not defined')
   }
 
-  // TODO: fix
   const sortedTeams = teams.sort((a: Team, b: Team) => {
     const aPosition = a.getGroupPosition(seasonId)
     const bPosition = b.getGroupPosition(seasonId)
@@ -220,8 +206,7 @@ export const drawMatchupsForKpoOrR16 = (
   })
 
   const middleIndex = Math.ceil(sortedTeams.length / 2)
- 
-  
+
   let matchUps: MatchUp[] = []
 
   // TODO: Optimize this
@@ -253,22 +238,8 @@ export const drawMatchupsForKpoOrR16 = (
   }
 
   matchUps.forEach((match: MatchUp) => {
-    Match.addTemplate(
-      match.homeId,
-      match.awayId,
-      competitionId,
-      stage,
-      1,
-      seasonId
-    )
-    Match.addTemplate(
-      match.awayId,
-      match.homeId,
-      competitionId,
-      stage,
-      2,
-      seasonId
-    )
+    Match.addTemplate(match.homeId, match.awayId, competitionId, stage, 1, seasonId)
+    Match.addTemplate(match.awayId, match.homeId, competitionId, stage, 2, seasonId)
   })
 }
 
@@ -302,30 +273,12 @@ export const drawMatchupsForQfOrSf = (
   })
 
   matchUps.forEach((match: MatchUp) => {
-    Match.addTemplate(
-      match.homeId,
-      match.awayId,
-      competitionId,
-      stage,
-      1,
-      seasonId
-    )
-    Match.addTemplate(
-      match.awayId,
-      match.homeId,
-      competitionId,
-      stage,
-      2,
-      seasonId
-    )
+    Match.addTemplate(match.homeId, match.awayId, competitionId, stage, 1, seasonId)
+    Match.addTemplate(match.awayId, match.homeId, competitionId, stage, 2, seasonId)
   })
 }
 
-export const setFinal = (
-  teams: Team[],
-  seasonId: number,
-  competitionId: number
-) => {
+export const setFinal = (teams: Team[], seasonId: number, competitionId: number) => {
   if (teams.length % 2 !== 0) {
     throw new Error('Not an even number of teams')
   }

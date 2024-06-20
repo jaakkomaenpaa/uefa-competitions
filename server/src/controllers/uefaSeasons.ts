@@ -1,10 +1,10 @@
 import { Request, Response } from 'express'
 
-import { BaseRankNation, StageSQL, TeamWithStats } from '../types'
-import { baseRanking } from '../data/baseNationRank'
+import { StageSQL, TeamWithStats } from '../types'
 import UefaSeason from '../classes/UefaSeason'
 import Ranking from '../classes/Ranking'
 import Team from '../classes/Team'
+import { ASSOCIATION_RANKING_DELAY } from '../rules/general'
 
 export const getLeagueTeamsByUefaSeason = (req: Request, res: Response) => {
   const seasonId = parseInt(req.params.seasonId)
@@ -33,7 +33,7 @@ export const getMatchesByCompStage = (req: Request, res: Response) => {
   const season = new UefaSeason(seasonId, competitionId)
   const matches = season.getMatchesByStage(stage)
 
-  const updatedMatches = matches.map((match) => {
+  const updatedMatches = matches.map(match => {
     const homeTeam = Team.fetchById(match.getHomeId())
     const awayTeam = Team.fetchById(match.getAwayId())
 
@@ -53,7 +53,7 @@ export const getMatchesByCompStage = (req: Request, res: Response) => {
       stage: match.getStage(),
       competitionId: match.getCompetitionId(),
       isOverTime: match.getIsOvertime(),
-      leg: match.getLeg()
+      leg: match.getLeg(),
     }
   })
 
@@ -91,19 +91,19 @@ export const initNationUefaSeasons = (req: Request, res: Response) => {
 export const initUefaSpots = (req: Request, res: Response) => {
   const seasonId = parseInt(req.params.seasonId)
 
-  const associationRanking = Ranking.fetchAssociationRanking(seasonId, 5)
-  // TODO: Replace with actual ranking
-  const tempRank = baseRanking.filter(e => e.id !== 1 && e.id !== 235) as BaseRankNation[]
-
+  const associationRanking = Ranking.fetchAssociationRanking(
+    seasonId - ASSOCIATION_RANKING_DELAY,
+    5
+  )
   const season = new UefaSeason(seasonId)
 
   try {
-    season.setTemplSpots(tempRank)
+    season.setTemplSpots(associationRanking)
     season.setEpsSpots()
     season.setTitleHolderSpots()
     res.status(201).json({ message: 'Success' })
   } catch (error) {
-    console.log(error) 
+    console.log(error)
     res.status(500).json({ message: 'An error occurred' })
   }
 }
@@ -116,7 +116,7 @@ export const setFirstQualStages = (req: Request, res: Response) => {
     season.setFirstQualStages()
     res.status(201).json({ message: 'Success' })
   } catch (error) {
-    console.log(error) 
+    console.log(error)
     res.status(500).json({ message: 'An error occurred' })
   }
 }

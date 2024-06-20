@@ -27,7 +27,6 @@ export default class Stage {
       (value): value is CompetitionCode => typeof value === 'number'
     )
 
-    // Iterate through allocations and place teams according to them
     competitions.forEach((comp: CompetitionCode) => {
       const stages = Object.values(StageSQL) as StageSQL[]
 

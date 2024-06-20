@@ -1,13 +1,11 @@
-import { baseRanking } from '../data/baseNationRank'
 import {
-  BaseRankNation,
-  CompetitionCode,
-  StageSQL,
-  TeamWithStats,
-} from '../types'
+  ASSOCIATION_RANKING_DELAY,
+  CLUB_RANKING_DELAY,
+  EPS_SPOT_RANKING_DELAY,
+} from '../rules/general'
+import { CompetitionCode, StageSQL, TeamWithStats } from '../types'
 import { DB } from '../utils/config'
 import { moveTeamsUp, sortUefaTeams } from '../utils/helpers'
-import { drawMatchupsForQualStage } from '../utils/matchGenerators'
 import {
   handleUeclVacation,
   promoteUclChampPath,
@@ -148,20 +146,18 @@ export default class UefaSeason {
     })
   }
 
-  // TODO: change ranking type
-  public setTemplSpots(ranking: BaseRankNation[]): void {
+  public setTemplSpots(ranking: Association[]): void {
     const associations = Association.fetchAll()
     associations.forEach((association: Association) => {
       const rank =
-        ranking.findIndex((r: BaseRankNation) => r.id === association.getId()) +
-        1
+        ranking.findIndex((r: Association) => r.getId() === association.getId()) + 1
       setAssociationSpots(rank, association, this.seasonId)
     })
   }
 
   public setEpsSpots(): void {
     const topAssociations = Ranking.fetchAssociationRanking(
-      this.seasonId - 1,
+      this.seasonId - EPS_SPOT_RANKING_DELAY,
       1
     ).slice(0, 2)
 
@@ -204,22 +200,14 @@ export default class UefaSeason {
         throw new Error('Setting eps spots failed')
       }
 
-      uefaTeams = sortUefaTeams(
-        uefaTeams,
-        association.getId(),
-        this.seasonId,
-        false
-      )
+      uefaTeams = sortUefaTeams(uefaTeams, association.getId(), this.seasonId, false)
 
       // Moving all the association's teams up in order for the eps spot
       moveTeamsUp(nextBestClub, uefaTeams)
 
       // If top team was not on UCL league phase
       const topTeam = uefaTeams[0]
-      if (
-        topTeam.getStage() !== StageSQL.LP &&
-        topTeam.getCompetitionId() !== 1
-      ) {
+      if (topTeam.getStage() !== StageSQL.LP && topTeam.getCompetitionId() !== 1) {
         topTeam.setUefaStage(StageSQL.LP, CompetitionCode.UCL)
       }
     })
@@ -232,9 +220,9 @@ export default class UefaSeason {
     const uelWinner = UefaCompetition.fetchById(CompetitionCode.UEL).getWinner(
       this.seasonId - 1
     )
-    const ueclWinner = UefaCompetition.fetchById(
-      CompetitionCode.UECL
-    ).getWinner(this.seasonId - 1)
+    const ueclWinner = UefaCompetition.fetchById(CompetitionCode.UECL).getWinner(
+      this.seasonId - 1
+    )
 
     if (uclWinner.hasQualifiedForLP(CompetitionCode.UCL)) {
       const topQualTeam = this.getTopTeamsFromQual(
@@ -329,16 +317,11 @@ export default class UefaSeason {
     }
 
     let qualTeams = rows.map(row => Team.createFromRow(row))
-    const ranking = Ranking.fetchClubRanking(this.seasonId, 5)
+    const ranking = Ranking.fetchClubRanking(this.seasonId - CLUB_RANKING_DELAY, 5)
 
     qualTeams = qualTeams.sort((a: Team, b: Team) => {
-      //const indexA = ranking.findIndex(r => r.getId() === a.getId())
-      //const indexB = ranking.findIndex(r => r.getId() === b.getId())
-
-      // TODO: fix to real ranking
-      const indexA = a.getAssociation().getId()
-      const indexB = b.getAssociation().getId()
-
+      const indexA = ranking.findIndex(r => r.getId() === a.getId())
+      const indexB = ranking.findIndex(r => r.getId() === b.getId())
       return indexA - indexB
     })
 
@@ -378,15 +361,11 @@ export default class UefaSeason {
     }
 
     let qualTeams = rows.map(row => Team.createFromRow(row))
-    const ranking = Ranking.fetchClubRanking(this.seasonId, 5)
+    const ranking = Ranking.fetchClubRanking(this.seasonId - CLUB_RANKING_DELAY, 5)
 
     qualTeams = qualTeams.sort((a: Team, b: Team) => {
-      //const indexA = ranking.findIndex(r => r.getId() === a.getId())
-      //const indexB = ranking.findIndex(r => r.getId() === b.getId())
-
-      // TODO: fix to real ranking
-      const indexA = a.getAssociation().getId()
-      const indexB = b.getAssociation().getId()
+      const indexA = ranking.findIndex(r => r.getId() === a.getId())
+      const indexB = ranking.findIndex(r => r.getId() === b.getId())
       return indexA - indexB
     })
 
@@ -421,15 +400,17 @@ export default class UefaSeason {
 
     let nations = rows.map(row => Association.createFromRow(row))
 
-    // TODO: change to actual ranking
-    const rankingList = baseRanking
+    const rankingList = Ranking.fetchAssociationRanking(
+      this.seasonId - ASSOCIATION_RANKING_DELAY,
+      5
+    )
 
     nations = nations.sort((a: Association, b: Association) => {
       const rankA = rankingList.findIndex(
-        (nation: BaseRankNation) => nation.id === a.getId()
+        (nation: Association) => nation.getId() === a.getId()
       )
       const rankB = rankingList.findIndex(
-        (nation: BaseRankNation) => nation.id === b.getId()
+        (nation: Association) => nation.getId() === b.getId()
       )
       return rankA - rankB
     })

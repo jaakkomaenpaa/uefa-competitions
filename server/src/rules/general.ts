@@ -159,5 +159,8 @@ export const STAGE_VALUES: Record<StageSQL, number> = {
   [StageSQL.QR1]: 10,
 }
 
+export const ASSOCIATION_RANKING_DELAY = 2
+export const EPS_SPOT_RANKING_DELAY = 1
+export const CLUB_RANKING_DELAY = 1
 
 // TODO: Add promotion rules

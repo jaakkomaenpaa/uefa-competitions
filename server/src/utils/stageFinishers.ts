@@ -94,7 +94,7 @@ export const finishLeagueStage = (
     const minParticipationBonus =
       PARTICIPATION_BONUS[competitionId][StageSQL.LP] || 0
 
-    const coeffPoints = team.getCoeffPoints(seasonId)
+    const coeffPoints = team.getSeasonCoeffPoints(seasonId)
 
     if (coeffPoints < minParticipationBonus) {
       team.increasePoints(minParticipationBonus - coeffPoints)

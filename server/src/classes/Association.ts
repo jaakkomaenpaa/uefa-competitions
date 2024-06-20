@@ -1,5 +1,6 @@
 import { baseRanking } from '../data/baseNationRank'
 import { DB } from '../utils/config'
+import Ranking from './Ranking'
 import Season from './Season'
 import Team from './Team'
 
@@ -73,8 +74,10 @@ export default class Association {
   }
 
   static fetchByRank(rank: number, seasonId: number): Association {
-    // TODO: change to actual
-    const ranking = baseRanking.filter(nation => nation.id !== 1 && nation.id !== 235)
+    const rankList = Ranking.fetchAssociationRanking(seasonId, 5)
+    const ranking = rankList.filter(
+      nation => nation.getId() !== 1 && nation.getId() !== 235
+    )
     const id = ranking[rank - 1].id
     return this.fetchById(id)
   }
@@ -101,6 +104,29 @@ export default class Association {
 
   public getLeagueName(): string | null {
     return this.leagueName
+  }
+
+  public getCoeffPoints(seasonId: number): number {
+    let firstSeasonId = seasonId - 5 + 1
+    if (firstSeasonId < 1) {
+      firstSeasonId = 1
+    }
+
+    const row = DB.prepare(
+      `
+      SELECT coeff_points AS coeffPoints
+      FROM confederation_seasons
+      WHERE confederation_id = ?
+        AND season_id >= ? 
+        AND season_id <= ?
+    `
+    ).get(this.id, firstSeasonId, seasonId) as { coeffPoints: number }
+
+    if (!row) {
+      return 0
+    }
+
+    return row.coeffPoints
   }
 
   public increasePoints(points: number): void {
@@ -153,9 +179,7 @@ export default class Association {
     ).all(seasonId, this.id, amount) as Team[]
 
     if (!rows) {
-      throw new Error(
-        `Could not find top league teams from association ${this.id}`
-      )
+      throw new Error(`Could not find top league teams from association ${this.id}`)
     }
 
     return rows.map(row => Team.createFromRow(row))
