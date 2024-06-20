@@ -4,7 +4,12 @@ import { Match, MatchScore, StageClient } from '../../types'
 import styles from './MatchView.module.css'
 import matchService from '../../services/matches'
 import SingleMatch from './SingleMatch'
-import { convertStageClientToSql, getNextStage, isStageReadyToDraw, sleep } from '../../utils'
+import {
+  convertStageClientToSql,
+  getNextStage,
+  isStageReadyToDraw,
+  sleep,
+} from '../../utils'
 
 interface SingleStageProps {
   stage: StageClient
@@ -16,6 +21,17 @@ const SingleStage = ({ stage, matches }: SingleStageProps) => {
   const [matchesToSave, setMatchesToSave] = useState<MatchScore[]>([])
   const [isReadyToDraw, setIsReadyToDraw] = useState<boolean>(false)
   const [isFinished, setIsFinished] = useState<boolean>(false)
+
+  matches = matches.sort((a: Match, b: Match) => {
+    const aIsFinished = a.homeScore !== null
+    const bIsFinished = b.homeScore !== null
+
+    if (aIsFinished === bIsFinished) {
+      return 0
+    }
+
+    return aIsFinished ? 1 : -1
+  })
 
   useEffect(() => {
     const getStatus = async () => {
@@ -43,7 +59,7 @@ const SingleStage = ({ stage, matches }: SingleStageProps) => {
   }
 
   const saveMatch = (match: MatchScore) => {
-    console.log('match', match);
+    console.log('match', match)
     setMatchesToSave([...matchesToSave, match])
     console.log('matches to save', matchesToSave)
   }
@@ -66,7 +82,7 @@ const SingleStage = ({ stage, matches }: SingleStageProps) => {
     window.location.reload()
   }
 
-  const makeDraw = async () => {    
+  const makeDraw = async () => {
     await matchService.getDrawForStage(
       parseInt(compId),
       convertStageClientToSql(stage)
@@ -74,16 +90,12 @@ const SingleStage = ({ stage, matches }: SingleStageProps) => {
     window.location.reload()
   }
 
+  if (isFinished && matches.length === 0) {
+    return <div className={styles.matchList}>Data not available</div>
+  }
+
   return (
     <div className={styles.matchList}>
-      {matches.map((match: Match) => (
-        <SingleMatch
-          key={match.id}
-          match={match}
-          saveMatch={saveMatch}
-          stage={stage}
-        />
-      ))}
       {matches.length > 0 &&
         !isFinished &&
         matches.every(
@@ -106,6 +118,14 @@ const SingleStage = ({ stage, matches }: SingleStageProps) => {
           Save scores
         </button>
       )}
+      {matches.map((match: Match) => (
+        <SingleMatch
+          key={match.id}
+          match={match}
+          saveMatch={saveMatch}
+          stage={stage}
+        />
+      ))}
     </div>
   )
 }

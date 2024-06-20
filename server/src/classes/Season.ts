@@ -12,7 +12,7 @@ export default class Season {
   }
 
   static fetchAll(): Season[] {
-    const rows = DB.prepare(
+    let rows = DB.prepare(
       `
       SELECT id, start_year AS startYear, end_year AS endYear
       FROM seasons  
@@ -21,6 +21,9 @@ export default class Season {
     if (!rows) {
       throw new Error('Seasons not found')
     }
+
+    rows = rows.filter(row => row.id >= 6)
+
     return rows.map(row => this.createFromRow(row))
   }
 

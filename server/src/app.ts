@@ -10,6 +10,7 @@ import domSeasonRouter from './routes/season.dom.route'
 import uefaSeasonRouter from './routes/season.uefa.route'
 import matchRouter from './routes/match.route'
 import rankingRouter from './routes/ranking.route'
+import setupRouter from './routes/setup.route'
 
 /*
 import testRouter from './routes/testing'
@@ -27,6 +28,7 @@ app.use('/api/seasons/domestic', domSeasonRouter)
 app.use('/api/seasons/uefa', uefaSeasonRouter)
 app.use('/api/matches', matchRouter)
 app.use('/api/rankings', rankingRouter)
+app.use('/api/setup', setupRouter)
 
 /*
 app.use('/api/test', testRouter)
