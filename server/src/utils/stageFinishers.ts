@@ -23,12 +23,6 @@ export const finishQualStage = (
 
   winners.forEach((winner: Team) => {
     winner.moveToNextStage()
-    if (Number(competitionId) === CompetitionCode.UCL && stage === StageSQL.QPO) {
-      const points = PARTICIPATION_BONUS[CompetitionCode.UCL][StageSQL.LP]
-      winner.increasePoints(points)
-      const association = Association.fetchByTeamId(winner.getId())
-      association.increasePoints(points)
-    }
   })
 
   if (Number(competitionId) === CompetitionCode.UECL) {

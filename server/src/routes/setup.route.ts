@@ -7,6 +7,7 @@ import {
   setupStages,
   setupDomestic,
   setupFinals,
+  addPoints,
 } from '../controllers/setup'
 
 const setupRouter = express.Router()
@@ -17,5 +18,6 @@ setupRouter.get('/seasons', setupSeasons)
 setupRouter.get('/stages', setupStages)
 setupRouter.get('/domestic', setupDomestic)
 setupRouter.get('/finals', setupFinals)
+setupRouter.get('/points', addPoints)
 
 export default setupRouter

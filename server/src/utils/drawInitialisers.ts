@@ -1,8 +1,10 @@
+import Association from '../classes/Association'
 import Stage from '../classes/Stage'
 import Team from '../classes/Team'
 import { HAS_STAGE_TWO_PATHS } from '../rules/general'
+import { PARTICIPATION_BONUS } from '../rules/points'
 import { CompetitionCode, StageSQL } from '../types'
-import { shuffleTeams } from './helpers'
+import { shuffleArray } from './helpers'
 import {
   drawMatchupsForGroupStage,
   drawMatchupsForKpoOrR16,
@@ -27,7 +29,7 @@ export const initDrawForQualStage = (
     const r2Places = 2 * chPathTeams.length - 16
     const r3Places = chPathTeams.length - r2Places
 
-    const shuffledTeams = shuffleTeams(chPathTeams)
+    const shuffledTeams = shuffleArray(chPathTeams)
     const r3Teams = shuffledTeams.slice(0, r3Places)
     const r2Teams = shuffledTeams.slice(r3Places)
 
@@ -57,6 +59,13 @@ export const initDrawForLeaguePhase = (
   const stageObj = new Stage(StageSQL.LP, competitionId)
 
   const teams = stageObj.getTeams(false, false)
+
+  teams.forEach((team: Team) => {
+    const points = PARTICIPATION_BONUS[competitionId][StageSQL.LP]
+    team.increasePoints(points)
+    const association = Association.fetchByTeamId(team.getId())
+    association.increasePoints(points)
+  })
 
   drawMatchupsForGroupStage(teams, seasonId, competitionId)
 }

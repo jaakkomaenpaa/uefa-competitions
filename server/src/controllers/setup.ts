@@ -17,6 +17,7 @@ import { teams as teams5 } from '../data/clubCoeffs/41-48'
 import { teams as teams6 } from '../data/clubCoeffs/49-55'
 import Stage from '../classes/Stage'
 import DomSeason from '../classes/DomSeason'
+import Team from '../classes/Team'
 
 export const setupNationCoeffs = (req: Request, res: Response) => {
   const allSeasons = [nations0, nations1, nations2, nations3, nations4, nations5]
@@ -139,5 +140,54 @@ export const setupFinals = (req: Request, res: Response) => {
   if (insert.changes === 0) {
     throw new Error('Insert nation failed')
   }
+  res.status(201).json({ message: 'Success' })
+}
+
+export const addPoints = (req: Request, res: Response) => {
+  const teams: any[] = [
+    "Sturm Graz",
+    "Club Brugge KV",
+    "Celtic",
+    "Liverpool",
+    "Arsenal",
+    "Manchester City",
+    "Aston Villa",
+    "Paris Saint Germain",
+    "Monaco",
+    "Stade Brestois 29",
+    'Bayern Munich',
+    'Borussia Dortmund',
+    'Bayer Leverkusen',
+    "VfB Stuttgart",
+    "RB Leipzig",
+    "AC Milan",
+    "Juventus",
+    "Atalanta",
+    "Bologna",
+    "Inter",
+    "PSV Eindhoven",
+    "Feyenoord",
+    "Benfica",
+    "Sporting CP",
+    "Barcelona",
+    "Real Madrid",
+    "Atletico Madrid",
+    "Girona",
+    "Shakhtar Donetsk"
+  ]
+
+  teams.forEach(team => {
+    const row = DB.prepare(`
+      SELECT id
+      FROM teams
+      WHERE name = ?  
+    `).get(team) as {id: number}
+
+    const teamObj = Team.fetchById(row.id)
+    const association = teamObj.getAssociation()
+    teamObj.increasePoints(6)
+    association.increasePoints(6)
+  })
+  
   res.status(201).json({ message: 'Success' })
 }

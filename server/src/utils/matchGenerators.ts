@@ -2,7 +2,7 @@ import Association from '../classes/Association'
 import Match from '../classes/Match'
 import Team from '../classes/Team'
 import { CompetitionCode, StageSQL } from '../types'
-import { shuffleTeams, sortTeamsByCoeff } from './helpers'
+import { shuffleArray, sortTeamsByCoeff } from './helpers'
 
 interface MatchUp {
   homeId: number
@@ -33,8 +33,8 @@ export const drawMatchupsForQualStage = (
     matchUps.some((match: MatchUp) => match.homeNationId === match.awayNationId)
   ) {
     matchUps.length = 0
-    const seeded = shuffleTeams(teams.slice(0, middleIndex))
-    const unSeeded = shuffleTeams(teams.slice(middleIndex))
+    const seeded = shuffleArray(teams.slice(0, middleIndex))
+    const unSeeded = shuffleArray(teams.slice(middleIndex))
 
     seeded.forEach((seed: Team, index: number) => {
       const unSeed = unSeeded[index]
@@ -74,12 +74,12 @@ export const drawMatchupsForGroupStage = (
   teams = sortTeamsByCoeff(teams, seasonId)
 
   const quarterSize = Math.ceil(teams.length / 4)
-  const pot1 = shuffleTeams(teams.slice(0, quarterSize))
-  const pot2 = shuffleTeams(teams.slice(quarterSize, quarterSize * 2))
-  const pot3 = shuffleTeams(teams.slice(quarterSize * 2, quarterSize * 3))
-  const pot4 = shuffleTeams(teams.slice(quarterSize * 3))
+  const pot1 = shuffleArray(teams.slice(0, quarterSize))
+  const pot2 = shuffleArray(teams.slice(quarterSize, quarterSize * 2))
+  const pot3 = shuffleArray(teams.slice(quarterSize * 2, quarterSize * 3))
+  const pot4 = shuffleArray(teams.slice(quarterSize * 3))
 
-  const matchUps: MatchUp[] = []
+  let matchUps: MatchUp[] = []
 
   // TODO: set matchdays and further randomise matchups
 
@@ -163,6 +163,8 @@ export const drawMatchupsForGroupStage = (
     })
   })
 
+  matchUps = shuffleArray(matchUps)
+
   matchUps.forEach((match: MatchUp) => {
     Match.addTemplate(
       match.homeId,
@@ -181,8 +183,6 @@ export const drawMatchupsForKpoOrR16 = (
   stage: StageSQL,
   competitionId: number
 ) => {
-  console.log('drawing matches')
-
   if (teams.length % 2 !== 0) {
     throw new Error('Not an even number of teams')
   }
@@ -210,8 +210,8 @@ export const drawMatchupsForKpoOrR16 = (
     matchUps.length === 0 ||
     matchUps.some((match: MatchUp) => match.homeNationId === match.awayNationId)
   ) {
-    const seeded = shuffleTeams(sortedTeams.slice(0, middleIndex))
-    const unSeeded = shuffleTeams(sortedTeams.slice(middleIndex))
+    const seeded = shuffleArray(sortedTeams.slice(0, middleIndex))
+    const unSeeded = shuffleArray(sortedTeams.slice(middleIndex))
 
     matchUps.length = 0
     seeded.forEach((seed: Team, index: number) => {
@@ -249,7 +249,7 @@ export const drawMatchupsForQfOrSf = (
     throw new Error('Not an even number of teams')
   }
 
-  const shuffledTeams = shuffleTeams(teams)
+  const shuffledTeams = shuffleArray(teams)
   let matchUps: MatchUp[] = []
 
   shuffledTeams.forEach((team: Team, index: number) => {

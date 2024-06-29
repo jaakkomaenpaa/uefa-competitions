@@ -1,4 +1,4 @@
-import { useState, useEffect, ChangeEvent } from 'react'
+import { useState, useLayoutEffect, ChangeEvent } from 'react'
 import { useParams } from 'react-router-dom'
 
 import SingleStage from './SingleStage'
@@ -11,7 +11,7 @@ const MatchView = () => {
   const [matches, setMatches] = useState<Match[]>([])
   const [currentStage, setCurrentStage] = useState<StageClient>(StageClient.QR1)
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const getStage = () => {
       const stage = window.localStorage.getItem(`stage-comp-${compId}`)
       if (stage) {

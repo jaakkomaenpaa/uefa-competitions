@@ -37,8 +37,8 @@ export const moveArrayItem = (
   return array
 }
 
-export const shuffleTeams = (teams: Team[]): Team[] => {
-  const shuffledArray = teams.slice()
+export const shuffleArray = (items: any): any[] => {
+  const shuffledArray = items.slice()
 
   for (let i = shuffledArray.length - 1; i > 0; i--) {
     const randomIndex = Math.floor(Math.random() * (i + 1))

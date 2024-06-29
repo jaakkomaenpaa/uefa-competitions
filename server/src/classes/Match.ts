@@ -226,19 +226,14 @@ export default class Match {
     return { homeAggregate, awayAggregate, homePens, awayPens }
   }
 
+  // Used only for coefficients, returns null if goes to pens
   public getWinnerId(): number | null {
-    if (!this.homeScore || !this.awayScore) {
+    if (this.homeScore === null || this.awayScore === null) {
       return null
     } else if (this.homeScore > this.awayScore) {
       return this.homeId
     } else if (this.awayScore > this.homeScore) {
       return this.awayId
-    } else if (this.pensHome && this.pensAway) {
-      if (this.pensHome > this.pensAway) {
-        return this.homeId
-      } else if (this.pensAway > this.pensHome) {
-        return this.awayId
-      }
     }
     return null
   }
@@ -299,7 +294,7 @@ export default class Match {
     let awayTeamPoints = 0
 
     const winnerId = this.getWinnerId()
-
+    
     if (this.homeId === winnerId) {
       homeNationPoints = ASSOCIATION_POINTS.matchWin[this.competitionId][phase]
       homeTeamPoints = TEAM_POINTS.matchWin[this.competitionId][this.stage]

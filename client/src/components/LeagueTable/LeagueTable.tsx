@@ -45,7 +45,7 @@ const LeagueTable = ({ teams }: LeagueTableProps) => {
         <tbody>
           {teams.map((team: Team, index: number) => {
             const rank = index + 1
-            if (!team.goalsFor || !team.goalsAgainst) {
+            if (team.goalsFor === null || team.goalsAgainst === null) {
               team.goalsFor = 0
               team.goalsAgainst = 0
             }

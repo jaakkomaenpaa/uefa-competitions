@@ -131,6 +131,11 @@ export default class Association {
 
   public increasePoints(points: number): void {
     const seasonId = Season.fetchCurrent().getId()
+    const teamCount = this.getUefaTeams(seasonId).length
+    const coeffPoints = points / teamCount
+
+    console.log('data', this.name, seasonId, teamCount, coeffPoints)
+
     const update = DB.prepare(
       `
       UPDATE confederation_seasons
@@ -138,7 +143,7 @@ export default class Association {
       WHERE season_id = ? 
         AND confederation_id = ?  
     `
-    ).run(points, seasonId, this.id)
+    ).run(coeffPoints, seasonId, this.id)
     if (update.changes === 0) {
       throw new Error('Point update failed')
     }

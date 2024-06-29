@@ -1,5 +1,4 @@
 import { ChangeEvent, useEffect, useRef, useState } from 'react'
-import { getImageUrl } from '../../services/proxy'
 import { Match, MatchScore, StageClient } from '../../types'
 import styles from './MatchView.module.css'
 import { convertStageClientToSql } from '../../utils'

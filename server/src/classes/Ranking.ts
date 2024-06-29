@@ -12,7 +12,7 @@ export default class Ranking {
       firstSeasonId = 1
     }
 
-    const rows = DB.prepare(
+    let rows = DB.prepare(
       `
       SELECT c.id, c.name, c.flag, c.code, SUM(coeff_points) AS coeffPoints
       FROM confederation_seasons AS cs
