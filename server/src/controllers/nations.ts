@@ -18,3 +18,9 @@ export const getAssociationById = (req: Request, res: Response) => {
   const association = Association.fetchById(associationId)
   res.json(association)
 }
+
+export const getAssociationByCode = (req: Request, res: Response) => {
+  const code = req.params.code
+  const association = Association.fetchByCode(code)
+  res.json(association)
+}

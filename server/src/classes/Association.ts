@@ -57,6 +57,19 @@ export default class Association {
     return this.createFromRow(row)
   }
 
+  static fetchByCode(code: string): Association {
+    const row = DB.prepare(
+      `
+      SELECT id, name, flag, code, cup_name AS cupName, league_name AS leagueName
+      FROM confederations
+      WHERE code = ?`
+    ).get(code) as Association
+    if (!row) {
+      throw new Error('Association not found')
+    }
+    return this.createFromRow(row)
+  }
+
   static fetchByTeamId(teamId: number): Association {
     const row = DB.prepare(
       `

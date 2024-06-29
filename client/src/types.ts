@@ -12,7 +12,7 @@ export interface Team {
   competition?: CompetitionCode
   coeffPoints?: number
   points?: number
-  confederationId?: number
+  associationId?: number
   confederation?: string
   confederationFlag?: string
   played?: number,

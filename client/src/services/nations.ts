@@ -13,9 +13,15 @@ const getNationById = async (nationId: string | number) => {
   return response.data
 }
 
+const getNationByCode = async (code: string) => {
+  const response = await axios.get(`${baseUrl}/code/${code}`)
+  return response.data
+}
+
 const exports = {
   getAllNations,
-  getNationById
+  getNationById,
+  getNationByCode,
 }
 
 export default exports
