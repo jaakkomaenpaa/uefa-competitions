@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { baseApiUrl } from '../config'
 import { StageClient } from '../types'
-import { convertStageClientToSql } from '../utils'
+import { convertStageClientToSql } from '../utils/stages'
 
 const baseUrl = `${baseApiUrl}/seasons/uefa`
 
@@ -29,9 +29,7 @@ const getUefaCompStatus = async (
   seasonId: string | number,
   competitionId: string | number
 ) => {
-  const response = await axios.get(
-    `${baseUrl}/${seasonId}/status/${competitionId}`
-  )
+  const response = await axios.get(`${baseUrl}/${seasonId}/status/${competitionId}`)
   return response.data
 }
 

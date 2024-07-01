@@ -6,7 +6,7 @@ import uefaSeasonService from '../../services/uefaSeasons'
 import { Association, Season } from '../../types'
 import { Link } from 'react-router-dom'
 import styles from './Home.module.css'
-import { initNextSeasonData } from '../../utils'
+import { initNextSeasonData } from '../../utils/seasons'
 import uclLogo from '../../images/UCL_onWhite.jpg'
 import uelLogo from '../../images/UEL_onWhite.jpg'
 import ueclLogo from '../../images/UECL_onWhite.png'
@@ -46,12 +46,8 @@ const Home = () => {
     const getData = async () => {
       const seasonData = await seasonService.getCurrentSeason()
       setCurrentSeason(seasonData)
-      const nationData = await domSeasonService.getDomSeasonStatuses(
-        seasonData.id
-      )
-      setNations(
-        nationData.filter((nation: Association) => !nation.seasonFinished)
-      )
+      const nationData = await domSeasonService.getDomSeasonStatuses(seasonData.id)
+      setNations(nationData.filter((nation: Association) => !nation.seasonFinished))
       const updatedCompetitions = await Promise.all(
         competitions.map(async competition => {
           const compData = await uefaSeasonService.getUefaCompStatus(
@@ -111,11 +107,12 @@ const Home = () => {
           </Link>
         ))}
       </div>
-      {nations.length === 0 && competitions.every((comp: UefaComp) => comp.finished) && (
-        <button className={styles.saveButton} onClick={submit}>
-          Finish this season
-        </button>
-      )}
+      {nations.length === 0 &&
+        competitions.every((comp: UefaComp) => comp.finished) && (
+          <button className={styles.saveButton} onClick={submit}>
+            Finish this season
+          </button>
+        )}
     </div>
   )
 }

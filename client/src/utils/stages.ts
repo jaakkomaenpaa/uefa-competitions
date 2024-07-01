@@ -1,43 +1,5 @@
-import uefaSeasonService from './services/uefaSeasons'
-import domSeasonService from './services/domSeasons'
-import seasonService from './services/seasons'
-import matchService from './services/matches'
-
-import { Season, StageClient, StageSQL } from './types'
-
-export const sleep = (s: number) => {
-  return new Promise(resolve => setTimeout(resolve, s * 1000))
-}
-
-export const splitArrayIntoChunks = (array: any[], chunkSize: number) => {
-  const chunks: any[] = []
-  for (let i = 0; i < array.length; i += chunkSize) {
-    chunks.push(array.slice(i, i + chunkSize))
-  }
-  return chunks
-}
-
-export const initNextSeasonData = async () => {
-  console.log('test1')
-  const nextSeason: Season = await seasonService.setNextSeason()
-
-  console.log('test2')
-  // set nations into uefa table with 0 points
-  await uefaSeasonService.initNationUefaSeasons(nextSeason.id)
-
-  console.log('test3')
-  // set teams into domestic tables with null positions
-  await domSeasonService.initAllDomSeasons(nextSeason.id)
-
-  console.log('test4')
-  // Set teams for uefa competitions
-  await uefaSeasonService.initUefaSpots(nextSeason.id)
-
-  console.log('test5')
-  // Draw first qualifying rounds
-  await uefaSeasonService.setFirstQualStages(nextSeason.id)
-  console.log('test6')
-}
+import { StageClient, StageSQL } from "../types"
+import matchService from '../services/matches'
 
 export const isStageReadyToDraw = async (
   stage: StageClient,

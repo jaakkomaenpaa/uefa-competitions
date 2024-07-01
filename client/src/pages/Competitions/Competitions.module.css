@@ -22,7 +22,8 @@
   cursor: pointer;
   font-size: medium;
   font-weight: 700;
-  color: navy;
+  color: var(--colors-primary);
+  transition: 0.2s ease;
 }
 
 .pageButton.selected {

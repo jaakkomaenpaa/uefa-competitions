@@ -12,21 +12,21 @@
   font-weight: 300;
   border: 1px solid #ccc;
   border-radius: 4px;
-  background-color: #f9f9f9; 
-  color: #333;
+  background-color: var(--colors-neutral);
+  color: var(--colors-textMain);
   transition: all 0.3s;
 }
 
 .stageSelect:hover {
-  border-color: navy;
+  border-color: var(--colors-primary);
   outline: none;
   box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
 }
 
 .option {
   padding: 20px;
-  background-color: #f9f9f9;
-  color: #333; 
+  background-color: var(--colors-neutral);
+  color: var(--colors-textMain);
 }
 
 .matchList {
@@ -45,7 +45,7 @@
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  background-color: whitesmoke;
+  background-color: var(--colors-neutral);
   padding: 20px;
   width: 100%;
   height: 50px;
@@ -53,7 +53,8 @@
   border-radius: 4px;
 }
 
-.homeTeamContainer, .awayTeamContainer {
+.homeTeamContainer,
+.awayTeamContainer {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -74,12 +75,10 @@
 
 .imgContainer {
   width: 40px;
-
 }
 
 .logo {
   height: 40px;
-
 }
 
 .inputContainer {
@@ -115,26 +114,24 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  background-color: whitesmoke;
   width: 100%;
   max-width: 800px;
   border-radius: 4px;
 }
 
 .saveButton {
-  background-color: darkblue;
+  background-color: var(--colors-primary);
   border: 0px;
   color: whitesmoke;
   font-weight: 500;
   padding: 12px 50px;
   border-radius: 30px;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease,
-    transform 0.3s ease;
+  transition: 0.3s ease;
   cursor: pointer;
 }
 
 .saveButton:hover {
-  background-color: royalblue;
+  background-color: var(--colors-buttonHover);
   box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
   transform: translateY(-3px);
 }

@@ -8,8 +8,8 @@ import {
   convertStageClientToSql,
   getNextStage,
   isStageReadyToDraw,
-  sleep,
-} from '../../utils'
+} from '../../utils/stages'
+import { sleep } from '../../utils/general'
 
 interface SingleStageProps {
   stage: StageClient

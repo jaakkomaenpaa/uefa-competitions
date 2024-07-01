@@ -1,7 +1,7 @@
 import { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { Match, MatchScore, StageClient } from '../../types'
 import styles from './MatchView.module.css'
-import { convertStageClientToSql } from '../../utils'
+import { convertStageClientToSql } from '../../utils/stages'
 import matchService from '../../services/matches'
 
 interface SingleMatchProps {
@@ -80,11 +80,7 @@ const SingleMatch = ({ match, stage, saveMatch }: SingleMatchProps) => {
         <div className={styles.homeTeamContainer}>
           {match.homeTeam}
           <div className={styles.imgContainer}>
-            <img
-              className={styles.logo}
-              src={match.homeLogo!}
-              alt='logo'
-            />
+            <img className={styles.logo} src={match.homeLogo!} alt='logo' />
           </div>
         </div>
         <div className={styles.inputContainer}>
@@ -107,11 +103,7 @@ const SingleMatch = ({ match, stage, saveMatch }: SingleMatchProps) => {
         </div>
         <div className={styles.awayTeamContainer}>
           <div className={styles.imgContainer}>
-            <img
-              className={styles.logo}
-              src={match.awayLogo!}
-              alt='logo'
-            />
+            <img className={styles.logo} src={match.awayLogo!} alt='logo' />
           </div>
           {match.awayTeam}
         </div>

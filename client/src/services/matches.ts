@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { baseApiUrl } from '../config'
 import { MatchScore, StageClient, StageSQL } from '../types'
-import { convertStageClientToSql } from '../utils'
+import { convertStageClientToSql } from '../utils/stages'
 
 const baseUrl = `${baseApiUrl}/matches`
 
@@ -31,7 +31,7 @@ const getDrawForStage = async (competitionId: number | string, stage: StageSQL) 
 }
 
 const getAggregate = async (matchId: number) => {
-  const response = await axios.get(`${baseUrl}/${matchId}/aggregate`)  
+  const response = await axios.get(`${baseUrl}/${matchId}/aggregate`)
   return response.data
 }
 

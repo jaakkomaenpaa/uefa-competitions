@@ -28,7 +28,7 @@
   gap: 5px;
   text-align: center;
   text-wrap: nowrap;
-  transition: font-weight 0.2s ease;
+  transition: 0.2s ease;
 }
 
 .link:hover {
@@ -65,8 +65,7 @@
   font-weight: 500;
   padding: 12px 50px;
   border-radius: 30px;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease,
-    transform 0.3s ease;
+  transition: 0.3s ease;
   cursor: pointer;
 }
 
@@ -77,7 +76,7 @@
 }
 
 .saveButton.disabled {
-  opacity: 0.5; /* Makes the button look disabled */
-  pointer-events: none; /* Prevents any interaction */
-  cursor: not-allowed; /* Shows a not-allowed cursor */
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: not-allowed;
 }

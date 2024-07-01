@@ -1,7 +1,7 @@
 .table {
   border-collapse: collapse;
-  background-color: #f4f4f4;
-  border-radius: 30px;
+  background-color: var(--colors-neutral);
+  border-radius: 10px;
 }
 
 .th,

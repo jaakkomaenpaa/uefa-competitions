@@ -2,22 +2,47 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: darkblue;
-  position: fixed;
+  background-color: var(--colors-primary);
+  position: sticky;
   top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  z-index: 1000;
+  left: 0;
+  width: 100vw;
+  z-index: 900;
+  height: 70px;
+  gap: 10px;
 }
 
 .navbarTab {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
   text-decoration: none;
   font-weight: 600;
-  color: whitesmoke;
-  padding: 20px;
+  color: var(--colors-neutral);
+  width: 60px;
+  padding: 10px;
+  border-radius: 3px;
+  transition: 0.3s ease;
+}
+
+.navbarTab:hover {
+  background-color: var(--colors-neutral);
+  color: var(--colors-primary);
 }
 
 .content {
-  margin-top: 60px;
+  min-height: calc(100vw - 60px);
+  width: 100vw;
+}
+
+.activeBar {
+  position: absolute;
+  left: 0;
+  bottom: 4px;
+  border-radius: 5px;
+  height: 8px;
+  width: 200px;
+  background-color: var(--colors-neutral);
+  z-index: 1000;
+  transition: 0.5s ease;
 }
