@@ -15,5 +15,16 @@ export const getTeamById = async (req: Request, res: Response) => {
 export const getTeamsByConfederationId = (req: Request, res: Response) => {
   const associationId: number = parseInt(req.params.associationId)
   const teams = Team.fetchByLeague(associationId)
-  res.json(teams)
+  res.json(teams.map((team: Team) => team.getWithAssociation()))
+}
+
+export const getTeamsBySearchTerm = (req: Request, res: Response) => {
+  const input = req.params.input
+  const teams = Team.fetchAll().filter((team: Team) =>
+    team.getName().toLowerCase().includes(input.toLowerCase())
+  )
+
+  const teamsWithAssociations = teams.map((team: Team) => team.getWithAssociation())
+
+  res.json(teamsWithAssociations)
 }

@@ -13,8 +13,6 @@ export interface Team {
   coeffPoints?: number
   points?: number
   associationId?: number
-  confederation?: string
-  confederationFlag?: string
   played?: number,
   won?: number,
   drawn?: number,
@@ -24,6 +22,12 @@ export interface Team {
   goalDifference?: number
   leaguePosition?: number
   isCupWinner?: boolean
+}
+
+export interface TeamWithAssociation extends Team {
+  associationFlag: string
+  associationCode: string
+  associationName: string
 }
 
 export interface TeamStats {

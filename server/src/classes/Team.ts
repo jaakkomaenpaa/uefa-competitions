@@ -1,5 +1,10 @@
 import { STAGE_DEMOTIONS } from '../rules/general'
-import { StageSQL, CompetitionCode, TeamGroupStats } from '../types'
+import {
+  StageSQL,
+  CompetitionCode,
+  TeamGroupStats,
+  TeamWithAssociation,
+} from '../types'
 import { DB } from '../utils/config'
 import Association from './Association'
 import Season from './Season'
@@ -139,6 +144,16 @@ export default class Team {
 
   public getCoeffPoints(): number {
     return this.coeffPoints
+  }
+
+  public getWithAssociation(): TeamWithAssociation {
+    const association = this.getAssociation()
+    return {
+      ...this,
+      associationFlag: association.getFlag(),
+      associationCode: association.getCode(),
+      associationName: association.getName(),
+    }
   }
 
   public setCoeffPoints(points: number): void {

@@ -1,4 +1,7 @@
 *.sql
 *.drawio
-/database
+uefa-BASE-old.db
+uefa-with-data.db
+uefa.db
+uefa-old.db
 /server-old

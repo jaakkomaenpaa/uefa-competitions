@@ -30,11 +30,6 @@
   color: var(--colors-primary);
 }
 
-.content {
-  min-height: calc(100vw - 60px);
-  width: 100vw;
-}
-
 .activeBar {
   position: absolute;
   left: 0;

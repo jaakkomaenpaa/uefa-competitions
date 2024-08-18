@@ -1,0 +1,60 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.searchContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
+} 
+
+.input {
+  height: 30px;
+  padding: 0px 4px;
+  border-radius: 5px;
+} 
+
+.teamList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px
+}
+
+.team {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  font-weight: 400;
+}
+
+.imgContainer {
+  width: 40px;
+}
+
+.logo {
+  height: 35px;
+  vertical-align: middle;
+}
+
+.flag {
+  height: 25px;
+  aspect-ratio: 7/5;
+  margin-right: 10px;
+  vertical-align: middle;
+  border-radius: 2px;
+}
+
+.link {
+  text-decoration: none;
+  color: var(--colors-textMain);
+}
+
+.link:hover {
+  text-decoration-line: underline;
+  text-decoration-color: var(--colors-primary);
+  color: var(--colors-primary);
+}

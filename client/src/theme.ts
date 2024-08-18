@@ -9,7 +9,9 @@ const theme = {
     neutral: 'whitesmoke',
     white: '#f9f9f9',
     caret: '',
-    buttonHover: 'royalblue'
+    buttonHover: 'royalblue',
+    tabTextSelected: '',
+    tabTextHover: ''
   },
   fontWeights: {
     bold: '700',

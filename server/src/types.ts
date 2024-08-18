@@ -33,6 +33,12 @@ export interface TeamWithStats extends Team {
   goalsAgainst: number
 }
 
+export interface TeamWithAssociation extends Team {
+  associationFlag: string
+  associationCode: string
+  associationName: string
+}
+
 export interface TeamGroupStats {
   won: number
   drawn: number
